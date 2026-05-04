@@ -1,0 +1,3220 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controlling & Tracking — Team Franke</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f0f2f5;
+  --surface: #ffffff;
+  --surface2: #e8ecf2;
+  --border: #d0d6e2;
+  --border2: #b8c0d0;
+  --text: #0f1623;
+  --text2: #3d4a5c;
+  --text3: #7a8799;
+  --accent: #2557e8;
+  --accent2: #5b35e0;
+  --green: #16a34a;
+  --yellow: #d97706;
+  --red: #dc2626;
+  --cyan: #0891b2;
+  --purple: #7c3aed;
+  --orange: #ea580c;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 240px;
+  height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  box-shadow: 2px 0 8px rgba(0,0,0,.06);
+  flex-direction: column;
+  z-index: 100;
+  padding: 0;
+}
+
+.sidebar-logo {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo-mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.logo-icon {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, #2557e8, #5b35e0);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800; color: #fff;
+}
+
+.logo-text {
+  font-size: 15px; font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.logo-sub {
+  font-size: 10px; color: var(--text3);
+  font-family: 'Space Mono', monospace;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-left: 42px;
+}
+
+.sidebar-section {
+  padding: 16px 12px 8px;
+  font-size: 9px;
+  font-family: 'Space Mono', monospace;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  margin: 1px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all .2s;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text2);
+  position: relative;
+}
+
+.nav-item:hover { background: var(--surface2); color: var(--text); }
+.nav-item.active { background: rgba(79,124,255,.12); color: var(--accent); }
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: -8px; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 20px;
+  background: var(--accent);
+  border-radius: 0 2px 2px 0;
+}
+
+.nav-icon { font-size: 15px; width: 20px; text-align: center; }
+
+.sidebar-bottom {
+  margin-top: auto;
+  padding: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.year-badge {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--text2);
+  text-align: center;
+}
+
+
+.year-badge span { color: var(--accent); font-weight: 700; }
+
+/* ── MAIN ── */
+.main {
+  margin-left: 240px;
+  min-height: 100vh;
+}
+
+.topbar {
+  padding: 20px 32px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+  position: sticky; top: 0; z-index: 50;
+  box-shadow: 0 1px 3px rgba(0,0,0,.08);
+}
+
+.topbar-title {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+}
+
+.topbar-sub {
+  font-size: 12px;
+  color: var(--text3);
+  font-family: 'Space Mono', monospace;
+  margin-top: 2px;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.live-dot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text2);
+  font-family: 'Space Mono', monospace;
+}
+
+.dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #16a34a;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,100% { opacity:1; transform: scale(1); }
+  50% { opacity:.5; transform: scale(.8); }
+}
+
+.q-tab-group {
+  display: flex;
+  gap: 4px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 3px;
+}
+
+.q-tab {
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+  font-family: 'Space Mono', monospace;
+  color: var(--text3);
+}
+
+.q-tab.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.content {
+  padding: 28px 32px;
+}
+
+/* ── PAGE SECTIONS ── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── GRID HELPERS ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+.grid-12 { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; }
+
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-sm { padding: 16px 20px; }
+
+.card-title {
+  font-size: 10px;
+  font-family: 'Space Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text3);
+  margin-bottom: 6px;
+}
+
+.card-value {
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.card-sub {
+  font-size: 12px;
+  color: var(--text2);
+  margin-top: 6px;
+}
+
+.card-accent {
+  position: absolute;
+  top: 0; right: 0;
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: .08;
+  pointer-events: none;
+}
+
+/* ── KPI STAT CARD ── */
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .2s, transform .2s;
+}
+
+.stat-card:hover { border-color: var(--accent); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(37,87,232,.08); }
+
+.stat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stat-label {
+  font-size: 10px;
+  font-family: 'Space Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text3);
+}
+
+.stat-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+}
+
+.stat-number {
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+
+.stat-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge {
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: 'Space Mono', monospace;
+}
+
+.badge-green { background: rgba(22,163,74,.12); color: #15803d; }
+.badge-yellow { background: rgba(217,119,6,.12); color: #b45309; }
+.badge-red { background: rgba(220,38,38,.12); color: #b91c1c; }
+.badge-blue { background: rgba(37,87,232,.12); color: #1a44b8; }
+.badge-purple { background: rgba(124,58,237,.12); color: #6d28d9; }
+
+/* ── PROGRESS BAR ── */
+.progress-wrap {
+  margin-top: 4px;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 11px;
+}
+
+.progress-label { color: var(--text2); }
+.progress-pct { color: var(--text); font-weight: 700; font-family: 'Space Mono', monospace; }
+
+.progress-bar {
+  height: 6px;
+  background: var(--border2);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 1s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── TEAM TABLE ── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table thead tr {
+  border-bottom: 1px solid var(--border2);
+}
+
+.data-table th {
+  font-size: 9px;
+  font-family: 'Space Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text3);
+  padding: 0 12px 12px 0;
+  text-align: left;
+  font-weight: 400;
+}
+
+.data-table td {
+  padding: 10px 12px 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+.data-table tbody tr:last-child td { border-bottom: none; }
+
+.data-table tbody tr:hover td { background: rgba(255,255,255,.02); }
+
+.person-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.person-name { font-weight: 600; font-size: 13px; }
+.person-role { font-size: 10px; color: var(--text3); font-family: 'Space Mono', monospace; }
+
+.num-cell {
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.zero { color: var(--text3); }
+.positive { color: var(--green); }
+
+/* ── INLINE PROGRESS ── */
+.inline-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inline-bar {
+  flex: 1;
+  height: 4px;
+  background: var(--border2);
+  border-radius: 4px;
+  overflow: hidden;
+  min-width: 60px;
+}
+
+.inline-fill { height: 100%; border-radius: 4px; }
+.inline-pct { font-size: 10px; font-family: 'Space Mono', monospace; color: var(--text2); min-width: 36px; text-align: right; }
+
+/* ── EVENT CARD ── */
+.event-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+
+.event-card:hover { border-color: var(--border2); }
+
+.event-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.event-name { font-size: 14px; font-weight: 700; }
+.event-date { font-size: 10px; font-family: 'Space Mono', monospace; color: var(--text3); margin-top: 2px; }
+.event-count {
+  font-size: 28px; font-weight: 800; letter-spacing: -1px;
+  color: var(--accent);
+}
+
+.event-body { padding: 16px 20px; }
+
+.event-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.event-row:last-child { border-bottom: none; }
+.event-row-name { color: var(--text2); }
+.event-row-num {
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+}
+
+.ja-badge {
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 9px;
+  font-weight: 700;
+  font-family: 'Space Mono', monospace;
+  text-transform: uppercase;
+}
+
+.ja { background: rgba(34,197,94,.15); color: var(--green); }
+.nein { background: rgba(239,68,68,.08); color: var(--text3); }
+
+/* ── SMAC ── */
+.smac-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 0;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  font-size: 13px;
+}
+
+.smac-row:last-child { border-bottom: none; }
+.smac-cat { color: var(--text); font-weight: 600; }
+.smac-val { font-family: 'Space Mono', monospace; font-weight: 700; text-align: center; font-size: 12px; }
+
+/* ── ORG TREE ── */
+.org-tree {
+  font-size: 13px;
+}
+
+.org-bm {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: linear-gradient(90deg, rgba(79,124,255,.08), transparent);
+  border-radius: 10px;
+  border: 1px solid rgba(79,124,255,.2);
+  margin-bottom: 16px;
+}
+
+.org-direct {
+  margin-left: 24px;
+  border-left: 2px solid var(--border2);
+  padding-left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.org-person {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  position: relative;
+}
+
+.org-person::before {
+  content: '';
+  position: absolute;
+  left: -18px;
+  top: 50%;
+  width: 16px;
+  height: 2px;
+  background: var(--border2);
+}
+
+.org-indirect {
+  margin-left: 24px;
+  margin-top: 6px;
+  border-left: 2px solid var(--border);
+  padding-left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.org-person-small {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--text2);
+  position: relative;
+}
+
+.org-person-small::before {
+  content: '';
+  position: absolute;
+  left: -18px;
+  top: 50%;
+  width: 16px;
+  height: 2px;
+  background: var(--border);
+}
+
+/* ── ORG NODES (neue Darstellung) ── */
+.org-node-f {
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(79,124,255,.08);
+  border: 1px solid rgba(79,124,255,.2);
+  color: var(--text);
+}
+
+.org-node-sb {
+  padding: 7px 10px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 800;
+  border: 1px solid;
+  text-align: center;
+  letter-spacing: 0.2px;
+}
+
+.org-node-m {
+  padding: 5px 8px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 500;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text2);
+}
+
+/* ── SECTION HEADER ── */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.section-sub {
+  font-size: 11px;
+  color: var(--text3);
+  font-family: 'Space Mono', monospace;
+  margin-top: 2px;
+}
+
+/* ── DIVIDER ── */
+.divider { height: 1px; background: var(--border); margin: 24px 0; }
+
+/* ── UMSATZ ── */
+.umsatz-grid {
+  display: grid;
+  grid-template-columns: 140px 1fr 1fr 1fr 1fr 80px;
+  gap: 0;
+  font-size: 12px;
+}
+
+.umsatz-header {
+  display: grid;
+  grid-template-columns: 140px 1fr 1fr 1fr 1fr 80px;
+  gap: 0;
+  padding: 0 0 10px;
+  border-bottom: 1px solid var(--border2);
+  margin-bottom: 4px;
+}
+
+.u-cell {
+  padding: 8px 8px 8px 0;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.u-header {
+  font-size: 9px;
+  font-family: 'Space Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text3);
+  padding: 0 8px 10px 0;
+}
+
+/* ── MONTH SELECTOR ── */
+.month-tabs {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.month-tab {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-family: 'Space Mono', monospace;
+  cursor: pointer;
+  transition: all .2s;
+  color: var(--text3);
+  border: 1px solid transparent;
+}
+
+.month-tab:hover { color: var(--text2); border-color: var(--border2); }
+.month-tab.active { background: var(--accent); color: #fff; }
+
+/* ── ANIMATE IN ── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(16px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+.animate { animation: fadeUp .4s ease both; }
+.delay-1 { animation-delay: .05s; }
+.delay-2 { animation-delay: .1s; }
+.delay-3 { animation-delay: .15s; }
+.delay-4 { animation-delay: .2s; }
+.delay-5 { animation-delay: .25s; }
+.delay-6 { animation-delay: .3s; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ── TEAMBEREICH COLORS ── */
+.team-franke { background: rgba(37,87,232,.12); color: #1a44b8; }
+.team-ketterer { background: rgba(22,163,74,.12); color: #15803d; }
+.team-lison { background: rgba(217,119,6,.12); color: #b45309; }
+.team-ruhmkorf { background: rgba(124,58,237,.12); color: #6d28d9; }
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: 'Space Mono', monospace;
+}
+
+/* ── RESPONSIVE CHARTS ── */
+.chart-container {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 100px;
+  padding-top: 12px;
+}
+
+.bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.bar-seg {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  transition: height .6s cubic-bezier(.4,0,.2,1);
+  min-height: 2px;
+}
+
+.bar-label {
+  font-size: 9px;
+  font-family: 'Space Mono', monospace;
+  color: var(--text3);
+}
+
+.bar-num {
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'Space Mono', monospace;
+  color: var(--text2);
+}
+
+/* ── RADIAL GAUGE ── */
+.gauge-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.gauge-svg { transform: rotate(-90deg); }
+.gauge-circle-bg { fill: none; stroke: #d0d6e2; stroke-width: 8; }
+.gauge-circle-fill { fill: none; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
+
+.gauge-text {
+  text-align: center;
+}
+
+.gauge-pct {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.gauge-name {
+  font-size: 10px;
+  color: var(--text3);
+  font-family: 'Space Mono', monospace;
+}
+
+/* SECTION GAP */
+.gap { margin-bottom: 20px; }
+
+/* ── EVENT MODAL ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15,22,35,.55);
+  z-index: 9000;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: #fff;
+  border-radius: 16px;
+  padding: 28px 28px 24px;
+  width: 560px;
+  max-width: 95vw;
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 64px rgba(0,0,0,.18);
+  position: relative;
+}
+.modal-title { font-size:18px;font-weight:800;margin-bottom:20px;color:var(--text); }
+.modal-label { font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.8px; }
+.modal-input {
+  width:100%;box-sizing:border-box;
+  border:1.5px solid var(--border2);border-radius:8px;
+  padding:9px 12px;font-size:13px;font-family:'Syne',sans-serif;
+  color:var(--text);background:var(--surface2);
+  margin-bottom:14px;outline:none;
+  transition:border-color .2s;
+}
+.modal-input:focus { border-color:var(--accent); }
+.modal-vp-list { display:flex;flex-direction:column;gap:6px;margin-bottom:14px; }
+.modal-vp-row {
+  border:1.5px solid var(--border);border-radius:8px;
+  padding:10px 12px;background:var(--surface2);
+}
+.modal-vp-row.selected { border-color:var(--accent);background:rgba(37,87,232,.05); }
+.modal-vp-header { display:flex;align-items:center;gap:10px;cursor:pointer; }
+.modal-vp-guests { margin-top:8px;display:none; }
+.modal-vp-row.selected .modal-vp-guests { display:block; }
+.modal-guest-tag {
+  display:inline-flex;align-items:center;gap:4px;
+  background:#2557e8;color:#fff;border-radius:20px;
+  padding:3px 10px;font-size:11px;font-weight:600;margin:2px;
+}
+.modal-guest-tag button { background:none;border:none;color:#fff;cursor:pointer;font-size:12px;padding:0;line-height:1; }
+.modal-btn-row { display:flex;gap:10px;justify-content:flex-end;margin-top:8px; }
+.modal-btn { padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:'Syne',sans-serif;transition:all .2s; }
+.modal-btn-primary { background:var(--accent);color:#fff; }
+.modal-btn-primary:hover { background:#1a44b8; }
+.modal-btn-secondary { background:var(--surface2);color:var(--text2);border:1.5px solid var(--border2); }
+.modal-btn-secondary:hover { border-color:var(--accent);color:var(--accent); }
+.modal-close { position:absolute;top:16px;right:16px;background:var(--surface2);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:14px;color:var(--text2); }
+
+/* ── VIEW TABS ── */
+.view-tab {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1.5px solid var(--border2);
+  color: var(--text2);
+  background: var(--surface);
+  transition: all .2s;
+  user-select: none;
+}
+.view-tab:hover { border-color: var(--accent); color: var(--accent); }
+.view-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.view-ctrl { display: flex; gap: 10px; align-items: flex-end; }
+
+/* ── NAV SUB ── */
+.nav-sub { flex-direction: column; padding: 0 8px 4px 36px; }
+.nav-sub-item {
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text3);
+  cursor: pointer;
+  transition: all .2s;
+}
+.nav-sub-item:hover { color: var(--accent); background: rgba(79,124,255,.08); }
+
+/* ── DROPDOWN ── */
+.db-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  flex-wrap: nowrap;
+  padding: 16px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+.db-select {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 0 12px;
+  height: 40px;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  outline: none;
+  transition: border-color .2s;
+  min-width: 160px;
+  box-sizing: border-box;
+}
+.db-select:hover, .db-select:focus { border-color: var(--accent); }
+.db-select option { background: var(--surface2); }
+
+.db-divider { width: 1px; height: 40px; background: var(--border2); flex-shrink: 0; }
+
+.info-btn {
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 8px;
+  background: #2557e8;
+  border: none;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  transition: all .2s;
+  flex-shrink: 0;
+  font-family: 'Syne', sans-serif;
+  box-shadow: 0 2px 8px rgba(37,87,232,.35);
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+.info-btn:hover { background: #1a44b8; box-shadow: 0 4px 12px rgba(37,87,232,.45); transform: translateY(-1px); }
+
+.info-tooltip {
+  display: none;
+  position: fixed;
+  z-index: 99999;
+  background: #fff;
+  border: 1.5px solid #2557e8;
+  border-radius: 12px;
+  padding: 20px 22px;
+  font-size: 13px;
+  color: #3d4a5c;
+  line-height: 1.7;
+  width: 340px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.15);
+  max-height: 60vh;
+  overflow-y: auto;
+}
+.info-tooltip.visible { display: block; }
+.info-tooltip-close {
+  float: right;
+  margin: -4px -6px 8px 8px;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: #f0f2f5;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 26px;
+  text-align: center;
+  color: #3d4a5c;
+}
+.info-tooltip-close:hover { background: #d0d6e2; }
+.info-btn-wrap { display: inline-flex; align-items: center; }
+
+/* ── DONUT CHART ── */
+.donut-wrap {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.donut-svg { flex-shrink: 0; }
+.donut-info { display: flex; flex-direction: column; gap: 4px; }
+.donut-pct {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -2px;
+  line-height: 1;
+}
+.donut-label { font-size: 11px; font-family: 'Space Mono', monospace; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
+.donut-meta { font-size: 12px; color: var(--text2); margin-top: 4px; }
+
+/* ── RANKING TABLE ── */
+.rank-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  font-family: 'Space Mono', monospace;
+  flex-shrink: 0;
+}
+.rank-1 { background: rgba(245,158,11,.2); color: #f59e0b; }
+.rank-2 { background: rgba(148,163,184,.15); color: #94a3b8; }
+.rank-3 { background: rgba(180,120,70,.15); color: #cd7f32; }
+.rank-other { background: var(--surface2); color: var(--text3); }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">
+      <div class="logo-icon">CT</div>
+      <div class="logo-text">Controlling</div>
+    </div>
+    <div class="logo-sub">Team Franke · 2026</div>
+  </div>
+
+  <div class="sidebar-section">Dashboards</div>
+  <div class="nav-item active" id="nav-wachstum" onclick="showPage('wachstum',this)">
+    <span class="nav-icon">📈</span> Wachstum
+  </div>
+  <div id="sub-wachstum" class="nav-sub" style="display:flex;">
+    <div class="nav-sub-item" onclick="showPage('ranking-wachstum',null,'wachstum')">🏆 Ranking</div>
+  </div>
+  <div class="nav-item" id="nav-umsatz" onclick="showPage('umsatz',this)">
+    <span class="nav-icon">💰</span> Umsatz
+  </div>
+  <div id="sub-umsatz" class="nav-sub" style="display:none;">
+    <div class="nav-sub-item" onclick="showPage('ranking-umsatz',null,'umsatz')">🏆 Ranking</div>
+  </div>
+  <div class="nav-item" id="nav-kompetenz" onclick="showPage('kompetenz',this)">
+    <span class="nav-icon">🎓</span> Kompetenz
+  </div>
+  <div id="sub-kompetenz" class="nav-sub" style="display:none;">
+    <div class="nav-sub-item" onclick="showPage('ranking-kompetenz',null,'kompetenz')">🏆 Ranking</div>
+  </div>
+  <div class="nav-item" id="nav-smac" onclick="showPage('smac',this)">
+    <span class="nav-icon">🎯</span> SMAC-Benchmarks
+  </div>
+
+  <div class="sidebar-section">Tracking</div>
+  <div class="nav-item" id="nav-events" onclick="showPage('events',this)">
+    <span class="nav-icon">📅</span> Events
+  </div>
+  <div class="nav-item" id="nav-team" onclick="showPage('team',this)">
+    <span class="nav-icon">👥</span> Team-Übersicht
+  </div>
+  <div class="nav-item" id="nav-organigramm" onclick="showPage('organigramm',this)">
+    <span class="nav-icon">🏗️</span> Organigramm
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="year-badge">
+      Geschäftsjahr <span>2026</span><br>
+      Stand: <span>März 2026</span>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title" id="page-title">Wachstums-Dashboard</div>
+      <div class="topbar-sub" id="page-sub">ÜBERBLICK · Q1 2026 · ALLE TEAMBEREICHE</div>
+    </div>
+
+  </div>
+
+  <div class="content">
+
+    <!-- ═══ WACHSTUM PAGE ═══ -->
+    <div id="page-wachstum" class="page">
+
+      <!-- Ansicht-Umschalter -->
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        <div class="view-tab active" id="tab-wachstum-fk"   onclick="setView('wachstum','fk',this)">👔 Führungskraft</div>
+        <div class="view-tab"        id="tab-wachstum-ma"   onclick="setView('wachstum','ma',this)">👤 Mitarbeiter</div>
+        <div class="view-tab"        id="tab-wachstum-ges"  onclick="setView('wachstum','ges',this)">🏢 Gesamtbereich</div>
+      </div>
+
+      <!-- Filter Controls -->
+      <div class="db-controls animate" id="ctrl-wachstum">
+        <!-- FK: Teamkopf only -->
+        <div id="wachstum-fk-ctrl" class="view-ctrl">
+          <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);margin-bottom:4px;letter-spacing:0.8px;text-transform:uppercase;">TEAMKOPF</div>
+          <select class="db-select" id="w-team" onchange="filterWachstum()">
+            <option value="Franke">Franke (BM) · 15</option>
+            <option value="Ketterer">Ketterer (SB) · 5</option>
+            <option value="Lison">Lison (SB) · 2</option>
+            <option value="Rühmkorf">Rühmkorf (SB) · 8</option>
+          </select>
+        </div>
+        <!-- MA: Teamkopf + Person -->
+        <div id="wachstum-ma-ctrl" class="view-ctrl" style="display:none;gap:10px;align-items:flex-end;">
+          <div>
+            <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);margin-bottom:4px;letter-spacing:0.8px;text-transform:uppercase;">TEAMKOPF</div>
+            <select class="db-select" id="w-team-ma" onchange="onTeamChange('w-team-ma','w-person',filterWachstum)">
+              <option value="alle">Alle</option>
+              <option value="Franke">Franke (BM)</option>
+              <option value="Ketterer">Ketterer (SB)</option>
+              <option value="Lison">Lison (SB)</option>
+              <option value="Rühmkorf">Rühmkorf (SB)</option>
+            </select>
+          </div>
+          <div>
+            <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);margin-bottom:4px;letter-spacing:0.8px;text-transform:uppercase;">MITARBEITER</div>
+            <select class="db-select" id="w-person" onchange="filterWachstum()">
+              <option value="alle">Alle</option>
+            </select>
+          </div>
+        </div>
+        <!-- GES: no filter needed -->
+        <div id="wachstum-ges-ctrl" class="view-ctrl" style="display:none;">
+          <div style="font-size:13px;font-weight:700;color:var(--text2);">Gesamtbereich Franke · 30 Mitglieder</div>
+        </div>
+
+        <div class="db-divider"></div>
+        <div>
+          <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);margin-bottom:4px;letter-spacing:0.8px;text-transform:uppercase;">ZEITRAUM</div>
+          <select class="db-select" id="w-zeit" onchange="filterWachstum()">
+            <option value="q1">Q1 2026</option>
+            <option value="q2">Q2 2026</option>
+            <option value="q3">Q3 2026</option>
+            <option value="q4">Q4 2026</option>
+            <option value="jahr">Gesamtjahr 2026</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- Ansicht-Label -->
+      <div id="wachstum-view-label" style="font-size:11px;font-family:'Space Mono',monospace;color:var(--text3);margin-bottom:12px;padding:0 2px;">
+        FÜHRUNGSKRAFT-ANSICHT · Ziel = Teamgröße × SMAC-Benchmark
+      </div>
+
+      <!-- Drei Donuts -->
+      <div class="grid-3 gap animate">
+        <div class="card" style="display:flex;flex-direction:column;align-items:center;padding:28px 20px;">
+          <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:20px;">Eventteilnehmer</div>
+          <div style="position:relative;width:160px;height:160px;margin-bottom:20px;">
+            <svg width="160" height="160" viewBox="0 0 160 160">
+              <circle cx="80" cy="80" r="64" fill="none" stroke="#e8ecf2" stroke-width="14"/>
+              <circle id="dw-ev" cx="80" cy="80" r="64" fill="none" stroke="#d97706" stroke-width="14"
+                stroke-linecap="round" stroke-dasharray="402" stroke-dashoffset="380"
+                transform="rotate(-90 80 80)" style="transition:stroke-dashoffset .9s cubic-bezier(.4,0,.2,1),stroke .4s;"/>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+              <div id="dw-ev-pct" style="font-size:34px;font-weight:800;letter-spacing:-2px;color:#d97706;line-height:1;">—</div>
+              <div style="font-size:10px;color:var(--text3);font-family:'Space Mono',monospace;margin-top:2px;">Zielerreichung</div>
+            </div>
+          </div>
+          <div id="dw-ev-badge" class="badge badge-yellow" style="margin-bottom:10px;">Wird berechnet</div>
+          <div style="font-size:12px;color:var(--text2);text-align:center;">Ist: <strong id="wist-ev">—</strong> · Ziel: <strong id="wzel-ev">—</strong></div>
+        </div>
+
+        <div class="card" style="display:flex;flex-direction:column;align-items:center;padding:28px 20px;">
+          <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:20px;">Sichtungsgespräche</div>
+          <div style="position:relative;width:160px;height:160px;margin-bottom:20px;">
+            <svg width="160" height="160" viewBox="0 0 160 160">
+              <circle cx="80" cy="80" r="64" fill="none" stroke="#e8ecf2" stroke-width="14"/>
+              <circle id="dw-sph" cx="80" cy="80" r="64" fill="none" stroke="#d97706" stroke-width="14"
+                stroke-linecap="round" stroke-dasharray="402" stroke-dashoffset="380"
+                transform="rotate(-90 80 80)" style="transition:stroke-dashoffset .9s cubic-bezier(.4,0,.2,1),stroke .4s;"/>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+              <div id="dw-sph-pct" style="font-size:34px;font-weight:800;letter-spacing:-2px;color:#d97706;line-height:1;">—</div>
+              <div style="font-size:10px;color:var(--text3);font-family:'Space Mono',monospace;margin-top:2px;">Zielerreichung</div>
+            </div>
+          </div>
+          <div id="dw-sph-badge" class="badge badge-yellow" style="margin-bottom:10px;">Wird berechnet</div>
+          <div style="font-size:12px;color:var(--text2);text-align:center;">Ist: <strong id="wist-sph">—</strong> · Ziel: <strong id="wzel-sph">—</strong></div>
+        </div>
+
+        <div class="card" style="display:flex;flex-direction:column;align-items:center;padding:28px 20px;">
+          <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:20px;">Einstellungsgespräche</div>
+          <div style="position:relative;width:160px;height:160px;margin-bottom:20px;">
+            <svg width="160" height="160" viewBox="0 0 160 160">
+              <circle cx="80" cy="80" r="64" fill="none" stroke="#e8ecf2" stroke-width="14"/>
+              <circle id="dw-eg1" cx="80" cy="80" r="64" fill="none" stroke="#d97706" stroke-width="14"
+                stroke-linecap="round" stroke-dasharray="402" stroke-dashoffset="380"
+                transform="rotate(-90 80 80)" style="transition:stroke-dashoffset .9s cubic-bezier(.4,0,.2,1),stroke .4s;"/>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+              <div id="dw-eg1-pct" style="font-size:34px;font-weight:800;letter-spacing:-2px;color:#d97706;line-height:1;">—</div>
+              <div style="font-size:10px;color:var(--text3);font-family:'Space Mono',monospace;margin-top:2px;">Zielerreichung</div>
+            </div>
+          </div>
+          <div id="dw-eg1-badge" class="badge badge-yellow" style="margin-bottom:10px;">Wird berechnet</div>
+          <div style="font-size:12px;color:var(--text2);text-align:center;">Ist: <strong id="wist-eg1">—</strong> · Ziel: <strong id="wzel-eg1">—</strong></div>
+        </div>
+      </div>
+
+      <!-- Personen/Team-Karte -->
+      <div class="card animate delay-2" style="margin-top:4px;display:flex;align-items:center;gap:20px;">
+        <div id="wachstum-card-avatar" class="avatar" style="width:48px;height:48px;font-size:16px;flex-shrink:0;background:var(--surface2);color:var(--text3);">—</div>
+        <div style="flex:1;">
+          <div id="wachstum-card-name" style="font-size:18px;font-weight:800;letter-spacing:-0.3px;">Franke · FK-Ansicht</div>
+          <div id="wachstum-card-sub" style="font-size:11px;font-family:'Space Mono',monospace;color:var(--text3);margin-top:2px;">Q1 2026</div>
+        </div>
+        <div style="display:flex;gap:24px;text-align:center;">
+          <div>
+            <div id="wsum-ev" style="font-size:28px;font-weight:800;color:var(--accent);">—</div>
+            <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);">Events</div>
+          </div>
+          <div>
+            <div id="wsum-sph" style="font-size:28px;font-weight:800;color:var(--cyan);">—</div>
+            <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);">SPH</div>
+          </div>
+          <div>
+            <div id="wsum-eg1" style="font-size:28px;font-weight:800;color:var(--green);">—</div>
+            <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);">EG1</div>
+          </div>
+        </div>
+        <div style="margin-left:8px;">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:4px;font-family:'Space Mono',monospace;">→ RANKING</div>
+          <div onclick="showPage('ranking-wachstum',null,'wachstum')" style="cursor:pointer;background:var(--accent);color:#fff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;transition:opacity .2s;" onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">Ranking öffnen</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══ UMSATZ PAGE ═══ -->
+    <div id="page-umsatz" class="page">
+
+      <!-- Ansicht-Umschalter -->
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        <div class="view-tab active" id="tab-umsatz-fk"   onclick="setView('umsatz','fk',this)">👔 Führungskraft</div>
+        <div class="view-tab"        id="tab-umsatz-ma"   onclick="setView('umsatz','ma',this)">👤 Mitarbeiter</div>
+        <div class="view-tab"        id="tab-umsatz-ges"  onclick="setView('umsatz','ges',this)">🏢 Gesamtbereich</div>
+      </div>
+
+      <!-- Filter Controls -->
+      <div class="db-controls animate" id="ctrl-umsatz">
+        <!-- FK: Teamkopf only -->
+        <div id="umsatz-fk-ctrl" class="view-ctrl">
+          <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);margin-bottom:4px;letter-spacing:0.8px;text-transform:uppercase;">TEAMKOPF</div>
+          <select class="db-select" id="u-team" onchange="filterUmsatz()">
+            <option value="Franke">Franke (BM) · 15</option>
+            <option value="Ketterer">Ketterer (SB) · 5</option>
+            <option value="Lison">Lison (SB) · 2</option>
+            <option value="Rühmkorf">Rühmkorf (SB) · 8</option>
+          </select>
+        </div>
+        <!-- MA: Teamkopf + Person -->
+        <div id="umsatz-ma-ctrl" class="view-ctrl" style="display:none;gap:10px;align-items:flex-end;">
+          <div>
+            <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);margin-bottom:4px;letter-spacing:0.8px;text-transform:uppercase;">TEAMKOPF</div>
+            <select class="db-select" id="u-team-ma" onchange="onTeamChange('u-team-ma','u-person',filterUmsatz)">
+              <option value="alle">Alle</option>
+              <option value="Franke">Franke (BM)</option>
+              <option value="Ketterer">Ketterer (SB)</option>
+              <option value="Lison">Lison (SB)</option>
+              <option value="Rühmkorf">Rühmkorf (SB)</option>
+            </select>
+          </div>
+          <div>
+            <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);margin-bottom:4px;letter-spacing:0.8px;text-transform:uppercase;">MITARBEITER</div>
+            <select class="db-select" id="u-person" onchange="filterUmsatz()">
+              <option value="alle">Alle</option>
+            </select>
+          </div>
+        </div>
+        <!-- GES: no filter needed -->
+        <div id="umsatz-ges-ctrl" class="view-ctrl" style="display:none;">
+          <div style="font-size:13px;font-weight:700;color:var(--text2);">Gesamtbereich Franke · 30 Mitglieder</div>
+        </div>
+
+        <div class="db-divider"></div>
+        <div>
+          <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);margin-bottom:4px;letter-spacing:0.8px;text-transform:uppercase;">ZEITRAUM</div>
+          <select class="db-select" id="u-zeit" onchange="filterUmsatz()">
+            <option value="q1">Q1 2026</option>
+            <option value="q2">Q2 2026</option>
+            <option value="q3">Q3 2026</option>
+            <option value="q4">Q4 2026</option>
+            <option value="jahr">Gesamtjahr 2026</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- Ansicht-Label -->
+      <div id="umsatz-view-label" style="font-size:11px;font-family:'Space Mono',monospace;color:var(--text3);margin-bottom:12px;padding:0 2px;">
+        FÜHRUNGSKRAFT-ANSICHT · Ziel = Teamgröße × SMAC-Benchmark
+      </div>
+
+      <!-- Vier Donuts -->
+      <div class="grid-4 gap animate">
+        <div class="card" style="display:flex;flex-direction:column;align-items:center;padding:20px 12px;">
+          <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px;">S1 · Erstgespräch</div>
+          <div style="position:relative;width:130px;height:130px;margin-bottom:12px;">
+            <svg width="130" height="130" viewBox="0 0 130 130">
+              <circle cx="65" cy="65" r="52" fill="none" stroke="#e8ecf2" stroke-width="12"/>
+              <circle id="du-s1" cx="65" cy="65" r="52" fill="none" stroke="#2557e8" stroke-width="12"
+                stroke-linecap="round" stroke-dasharray="327" stroke-dashoffset="327"
+                transform="rotate(-90 65 65)" style="transition:stroke-dashoffset .9s cubic-bezier(.4,0,.2,1),stroke .4s;"/>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+              <div id="du-s1-pct" style="font-size:28px;font-weight:800;letter-spacing:-1px;color:#2557e8;line-height:1;">—</div>
+              <div style="font-size:9px;color:var(--text3);font-family:'Space Mono',monospace;margin-top:2px;">Zielerreichung</div>
+            </div>
+          </div>
+          <div id="du-s1-badge" class="badge" style="background:var(--surface2);color:var(--text3);margin-bottom:8px;">—</div>
+          <div style="font-size:11px;color:var(--text2);text-align:center;">Ist: <strong id="du-s1-ist">—</strong> · Ziel: <strong id="du-s1-ziel">—</strong></div>
+        </div>
+
+        <div class="card" style="display:flex;flex-direction:column;align-items:center;padding:20px 12px;">
+          <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px;">S2 · Verkaufsgespräch</div>
+          <div style="position:relative;width:130px;height:130px;margin-bottom:12px;">
+            <svg width="130" height="130" viewBox="0 0 130 130">
+              <circle cx="65" cy="65" r="52" fill="none" stroke="#e8ecf2" stroke-width="12"/>
+              <circle id="du-s2" cx="65" cy="65" r="52" fill="none" stroke="#7c3aed" stroke-width="12"
+                stroke-linecap="round" stroke-dasharray="327" stroke-dashoffset="327"
+                transform="rotate(-90 65 65)" style="transition:stroke-dashoffset .9s cubic-bezier(.4,0,.2,1),stroke .4s;"/>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+              <div id="du-s2-pct" style="font-size:28px;font-weight:800;letter-spacing:-1px;color:#7c3aed;line-height:1;">—</div>
+              <div style="font-size:9px;color:var(--text3);font-family:'Space Mono',monospace;margin-top:2px;">Zielerreichung</div>
+            </div>
+          </div>
+          <div id="du-s2-badge" class="badge" style="background:var(--surface2);color:var(--text3);margin-bottom:8px;">—</div>
+          <div style="font-size:11px;color:var(--text2);text-align:center;">Ist: <strong id="du-s2-ist">—</strong> · Ziel: <strong id="du-s2-ziel">—</strong></div>
+        </div>
+
+        <div class="card" style="display:flex;flex-direction:column;align-items:center;padding:20px 12px;">
+          <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px;">S3 · Abschlussgespräch</div>
+          <div style="position:relative;width:130px;height:130px;margin-bottom:12px;">
+            <svg width="130" height="130" viewBox="0 0 130 130">
+              <circle cx="65" cy="65" r="52" fill="none" stroke="#e8ecf2" stroke-width="12"/>
+              <circle id="du-s3" cx="65" cy="65" r="52" fill="none" stroke="#16a34a" stroke-width="12"
+                stroke-linecap="round" stroke-dasharray="327" stroke-dashoffset="327"
+                transform="rotate(-90 65 65)" style="transition:stroke-dashoffset .9s cubic-bezier(.4,0,.2,1),stroke .4s;"/>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+              <div id="du-s3-pct" style="font-size:28px;font-weight:800;letter-spacing:-1px;color:#16a34a;line-height:1;">—</div>
+              <div style="font-size:9px;color:var(--text3);font-family:'Space Mono',monospace;margin-top:2px;">Zielerreichung</div>
+            </div>
+          </div>
+          <div id="du-s3-badge" class="badge" style="background:var(--surface2);color:var(--text3);margin-bottom:8px;">—</div>
+          <div style="font-size:11px;color:var(--text2);text-align:center;">Ist: <strong id="du-s3-ist">—</strong> · Ziel: <strong id="du-s3-ziel">—</strong></div>
+        </div>
+
+        <div class="card" style="display:flex;flex-direction:column;align-items:center;padding:20px 12px;">
+          <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px;">Service · Bestand</div>
+          <div style="position:relative;width:130px;height:130px;margin-bottom:12px;">
+            <svg width="130" height="130" viewBox="0 0 130 130">
+              <circle cx="65" cy="65" r="52" fill="none" stroke="#e8ecf2" stroke-width="12"/>
+              <circle id="du-svc" cx="65" cy="65" r="52" fill="none" stroke="#0891b2" stroke-width="12"
+                stroke-linecap="round" stroke-dasharray="327" stroke-dashoffset="327"
+                transform="rotate(-90 65 65)" style="transition:stroke-dashoffset .9s cubic-bezier(.4,0,.2,1),stroke .4s;"/>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+              <div id="du-svc-pct" style="font-size:28px;font-weight:800;letter-spacing:-1px;color:#0891b2;line-height:1;">—</div>
+              <div style="font-size:9px;color:var(--text3);font-family:'Space Mono',monospace;margin-top:2px;">Nur Tracking</div>
+            </div>
+          </div>
+          <div id="du-svc-badge" class="badge" style="background:var(--surface2);color:var(--text3);margin-bottom:8px;">—</div>
+          <div style="font-size:11px;color:var(--text2);text-align:center;">Ist: <strong id="du-svc-ist">—</strong> <span style="color:var(--text3);">kein Ziel</span></div>
+        </div>
+      </div>
+
+      <!-- Personen/Team-Karte -->
+      <div class="card animate delay-2" style="margin-top:4px;display:flex;align-items:center;gap:20px;">
+        <div id="umsatz-card-avatar" class="avatar" style="width:48px;height:48px;font-size:16px;flex-shrink:0;background:var(--surface2);color:var(--text3);">—</div>
+        <div style="flex:1;">
+          <div id="umsatz-card-name" style="font-size:18px;font-weight:800;letter-spacing:-0.3px;">Franke · FK-Ansicht</div>
+          <div id="umsatz-card-sub" style="font-size:11px;font-family:'Space Mono',monospace;color:var(--text3);margin-top:2px;">Q1 2026</div>
+        </div>
+        <div style="display:flex;gap:20px;text-align:center;">
+          <div><div id="usum-s1"  style="font-size:24px;font-weight:800;color:#2557e8;">—</div><div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);">S1</div></div>
+          <div><div id="usum-s2"  style="font-size:24px;font-weight:800;color:#7c3aed;">—</div><div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);">S2</div></div>
+          <div><div id="usum-s3"  style="font-size:24px;font-weight:800;color:#16a34a;">—</div><div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);">S3</div></div>
+          <div><div id="usum-svc" style="font-size:24px;font-weight:800;color:#0891b2;">—</div><div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);">Service</div></div>
+        </div>
+        <div style="margin-left:8px;">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:4px;font-family:'Space Mono',monospace;">→ RANKING</div>
+          <div onclick="showPage('ranking-umsatz',null,'umsatz')" style="cursor:pointer;background:var(--accent);color:#fff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;transition:opacity .2s;" onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">Ranking öffnen</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══ SMAC PAGE ═══ -->
+    <div id="page-smac" class="page">
+      <div class="grid-3 gap animate">
+        <div class="stat-card">
+          <div class="stat-header"><div class="stat-label">Neukundenquote</div><div class="stat-icon" style="background:rgba(22,163,74,.1);">🆕</div></div>
+          <div class="stat-number" style="color:#16a34a;">1</div>
+          <div class="stat-meta"><div class="badge badge-green">pro Monat</div><span style="font-size:11px;color:var(--text3);">12 p.a.</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header"><div class="stat-label">Umsatzvolumen Ziel</div><div class="stat-icon" style="background:rgba(217,119,6,.1);">💶</div></div>
+          <div class="stat-number" style="color:var(--yellow);font-size:28px;">60k</div>
+          <div class="stat-meta"><div class="badge badge-yellow">mtl.</div><span style="font-size:11px;color:var(--text3);">720.000 p.a.</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header"><div class="stat-label">Schulungsquote Ziel</div><div class="stat-icon" style="background:rgba(37,87,232,.1);">📚</div></div>
+          <div class="stat-number" style="color:#2557e8;">75%</div>
+          <div class="stat-meta"><div class="badge badge-blue">pro Quartal</div><span style="font-size:11px;color:var(--text3);">Pflicht</span></div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="card animate">
+        <div class="section-header">
+          <div>
+            <div class="section-title">SMAC-Benchmark-Übersicht</div>
+            <div class="section-sub">ZIELE PRO MONAT · QUARTAL · JAHR</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:2.5fr 1fr 1fr 1fr;gap:0;margin-top:8px;">
+          <div class="u-header">Bereich</div>
+          <div class="u-header" style="text-align:center;">Monat</div>
+          <div class="u-header" style="text-align:center;">Quartal</div>
+          <div class="u-header" style="text-align:center;">Jahr</div>
+        </div>
+        <div class="smac-row">
+          <div class="smac-cat">🆕 Neukunde (bis SB+)</div>
+          <div class="smac-val" style="color:#16a34a;">1</div>
+          <div class="smac-val" style="color:#16a34a;">3</div>
+          <div class="smac-val" style="color:#16a34a;">12</div>
+        </div>
+        <div class="smac-row">
+          <div class="smac-cat">💶 Volumen (€)</div>
+          <div class="smac-val" style="color:#d97706;">60.000</div>
+          <div class="smac-val" style="color:#d97706;">180.000</div>
+          <div class="smac-val" style="color:#d97706;">720.000</div>
+        </div>
+        <div class="smac-row">
+          <div class="smac-cat">📈 Umsatzwachstum (ab TL)</div>
+          <div class="smac-val" style="color:#2557e8;">1,7%</div>
+          <div class="smac-val" style="color:#2557e8;">5%</div>
+          <div class="smac-val" style="color:#2557e8;">20%</div>
+        </div>
+        <div class="smac-row">
+          <div class="smac-cat">🎟️ Eventteilnehmer</div>
+          <div class="smac-val" style="color:#0891b2;">1</div>
+          <div class="smac-val" style="color:#0891b2;">3</div>
+          <div class="smac-val" style="color:#0891b2;">12</div>
+        </div>
+        <div class="smac-row">
+          <div class="smac-cat">🔑 Neu VP netto (bis 6 Direkte)</div>
+          <div class="smac-val" style="color:#7c3aed;">0,08</div>
+          <div class="smac-val" style="color:#7c3aed;">0,25</div>
+          <div class="smac-val" style="color:#7c3aed;">1</div>
+        </div>
+        <div class="smac-row">
+          <div class="smac-cat">📝 Anmeldequote (ab TL)</div>
+          <div class="smac-val" style="color:var(--orange);">0,3%</div>
+          <div class="smac-val" style="color:var(--orange);">1,3%</div>
+          <div class="smac-val" style="color:var(--orange);">5%</div>
+        </div>
+        <div class="smac-row">
+          <div class="smac-cat">✅ Alle Events besucht (bis BA)</div>
+          <div class="smac-val" style="color:#16a34a;">JA</div>
+          <div class="smac-val" style="color:#16a34a;">JA</div>
+          <div class="smac-val" style="color:#16a34a;">JA</div>
+        </div>
+        <div class="smac-row">
+          <div class="smac-cat">📚 Schulungsquote</div>
+          <div class="smac-val" style="color:#2557e8;">75%</div>
+          <div class="smac-val" style="color:#2557e8;">75%</div>
+          <div class="smac-val" style="color:#2557e8;">75%</div>
+        </div>
+        <div class="smac-row">
+          <div class="smac-cat">🏷️ Positionssteckbriefe</div>
+          <div class="smac-val" style="color:#16a34a;">JA</div>
+          <div class="smac-val" style="color:#16a34a;">JA</div>
+          <div class="smac-val" style="color:#16a34a;">JA</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ EVENTS PAGE ═══ -->
+    <div id="page-events" class="page">
+
+      <!-- KPI Zeile -->
+      <div class="grid-3 gap animate">
+        <div class="stat-card">
+          <div class="stat-header"><div class="stat-label">Events 2026 (bisher)</div><div class="stat-icon" style="background:rgba(37,87,232,.1);">📅</div></div>
+          <div class="stat-number" style="color:#2557e8;">5</div>
+          <div class="stat-meta"><div class="badge badge-blue">Jan–Mär</div><span style="font-size:11px;color:var(--text3);">+9 geplant</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header"><div class="stat-label">Gesamtteilnehmer</div><div class="stat-icon" style="background:rgba(22,163,74,.1);">👤</div></div>
+          <div class="stat-number" style="color:#16a34a;">16</div>
+          <div class="stat-meta"><div class="badge badge-green">Externe Gäste</div><span style="font-size:11px;color:var(--text3);">ohne VPs</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header"><div class="stat-label">Stärkster Event</div><div class="stat-icon" style="background:rgba(217,119,6,.1);">🏆</div></div>
+          <div class="stat-number" style="color:#d97706;font-size:20px;padding-top:4px;">Kart Event</div>
+          <div class="stat-meta"><div class="badge badge-yellow">28.02.</div><span style="font-size:11px;color:var(--text3);">9 Gäste</span></div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div class="divider" style="flex:1;margin:0;"></div>
+        <button onclick="openEventModal()" style="margin-left:16px;flex-shrink:0;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;display:flex;align-items:center;gap:8px;transition:opacity .2s;" onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">
+          <span>＋</span> Event eintragen
+        </button>
+      </div>
+
+      <!-- Event 1: AEC Abend -->
+      <div class="card animate delay-1" style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <div>
+            <div style="font-size:16px;font-weight:800;">AEC Abend</div>
+            <div style="font-size:11px;font-family:'Space Mono',monospace;color:var(--text3);margin-top:2px;">24.02.2026 · 6 Gäste gesamt</div>
+          </div>
+          <div style="font-size:36px;font-weight:800;color:#2557e8;">6</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+
+          <div style="display:grid;grid-template-columns:160px 1fr;gap:0;align-items:start;padding:10px 14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);">
+            <div>
+              <div style="font-weight:700;font-size:13px;">Henrik Franke</div>
+              <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);">Team Franke · BM</div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
+              <span style="background:rgba(37,87,232,.1);color:#1a44b8;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;">Timo Friedrich</span>
+              <span style="background:rgba(37,87,232,.1);color:#1a44b8;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;">Levin</span>
+              <span style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);margin-left:4px;">2 Gäste</span>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:160px 1fr;gap:0;align-items:start;padding:10px 14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);">
+            <div>
+              <div style="font-weight:700;font-size:13px;">Nick Ketterer</div>
+              <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);">Team Ketterer · SB</div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
+              <span style="background:rgba(22,163,74,.1);color:#15803d;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;">Fynn Siekmann</span>
+              <span style="background:rgba(22,163,74,.1);color:#15803d;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;">Mika Siekmann</span>
+              <span style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);margin-left:4px;">2 Gäste</span>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:160px 1fr;gap:0;align-items:start;padding:10px 14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);">
+            <div>
+              <div style="font-weight:700;font-size:13px;">Yves Lison</div>
+              <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);">Team Lison · SB</div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
+              <span style="background:rgba(217,119,6,.1);color:#b45309;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;">Jan-Luca Nehrlich</span>
+              <span style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);margin-left:4px;">1 Gast</span>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:160px 1fr;gap:0;align-items:start;padding:10px 14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);">
+            <div>
+              <div style="font-weight:700;font-size:13px;">Hauke Rühmkorf</div>
+              <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);">Team Rühmkorf · SB</div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
+              <span style="background:rgba(124,58,237,.1);color:#6d28d9;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;">Joris Koplin</span>
+              <span style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);margin-left:4px;">1 Gast</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Event 2: Kart Event -->
+      <div class="card animate delay-2" style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <div>
+            <div style="font-size:16px;font-weight:800;">Kart Event 🏎️</div>
+            <div style="font-size:11px;font-family:'Space Mono',monospace;color:var(--text3);margin-top:2px;">28.02.2026 · 9 Gäste gesamt</div>
+          </div>
+          <div style="font-size:36px;font-weight:800;color:#16a34a;">9</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+
+          <div style="display:grid;grid-template-columns:160px 1fr;gap:0;align-items:start;padding:10px 14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);">
+            <div>
+              <div style="font-weight:700;font-size:13px;">Jonah Faßhauer</div>
+              <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);">Team Franke</div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
+              <span style="background:rgba(37,87,232,.1);color:#1a44b8;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;">Arvid Ihle</span>
+              <span style="background:rgba(37,87,232,.1);color:#1a44b8;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;">Ahmad Ramadan</span>
+              <span style="background:rgba(37,87,232,.1);color:#1a44b8;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;">Tom Ludwicziak</span>
+              <span style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);margin-left:4px;">3 Gäste</span>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:160px 1fr;gap:0;align-items:start;padding:10px 14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);">
+            <div>
+              <div style="font-weight:700;font-size:13px;">Marcel Speder</div>
+              <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);">Team Franke</div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
+              <span style="background:rgba(37,87,232,.1);color:#1a44b8;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;">Justin Jünge</span>
+              <span style="background:rgba(37,87,232,.1);color:#1a44b8;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;">Robin Bölder</span>
+              <span style="background:rgba(37,87,232,.1);color:#1a44b8;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;">Alexander Halbfinger</span>
+              <span style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);margin-left:4px;">3 Gäste</span>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:160px 1fr;gap:0;align-items:start;padding:10px 14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);">
+            <div>
+              <div style="font-weight:700;font-size:13px;">Oscar Houtrow</div>
+              <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);">Team Ketterer</div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
+              <span style="background:rgba(22,163,74,.1);color:#15803d;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;">Jesse Hanisch</span>
+              <span style="background:rgba(22,163,74,.1);color:#15803d;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;">Leonhardt Richter</span>
+              <span style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);margin-left:4px;">2 Gäste</span>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:160px 1fr;gap:0;align-items:start;padding:10px 14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);">
+            <div>
+              <div style="font-weight:700;font-size:13px;">Hauke Rühmkorf</div>
+              <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);">Team Rühmkorf · SB</div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
+              <span style="background:rgba(124,58,237,.1);color:#6d28d9;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;">Timo Müller</span>
+              <span style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);margin-left:4px;">1 Gast</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Event 3: Karriereabend -->
+      <div class="card animate delay-3" style="margin-bottom:16px;opacity:.75;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <div>
+            <div style="font-size:16px;font-weight:800;">Karriereabend</div>
+            <div style="font-size:11px;font-family:'Space Mono',monospace;color:var(--text3);margin-top:2px;">10.03.2026 · Ausgefallen / Keine Gäste</div>
+          </div>
+          <div style="font-size:36px;font-weight:800;color:var(--text3);">0</div>
+        </div>
+        <div style="text-align:center;padding:20px;color:var(--text3);">
+          <div style="font-size:28px;margin-bottom:8px;">😔</div>
+          <div style="font-size:12px;font-family:'Space Mono',monospace;">Alle VPs: NEIN — keine Teilnehmer</div>
+        </div>
+      </div>
+
+      <!-- Event 4: Bowling -->
+      <div class="card animate delay-4" style="margin-bottom:16px;opacity:.75;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <div>
+            <div style="font-size:16px;font-weight:800;">Bowling Event 🎳</div>
+            <div style="font-size:11px;font-family:'Space Mono',monospace;color:var(--text3);margin-top:2px;">24.03.2026 · Ausgefallen / Keine Gäste</div>
+          </div>
+          <div style="font-size:36px;font-weight:800;color:var(--text3);">0</div>
+        </div>
+        <div style="text-align:center;padding:20px;color:var(--text3);">
+          <div style="font-size:28px;margin-bottom:8px;">😔</div>
+          <div style="font-size:12px;font-family:'Space Mono',monospace;">Ausgefallen — keine Teilnehmer</div>
+        </div>
+      </div>
+
+      <!-- Event 5: AEC Abend 26.03.2026 -->
+      <div class="card animate delay-4" style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <div>
+            <div style="font-size:16px;font-weight:800;">AEC Abend</div>
+            <div style="font-size:11px;font-family:'Space Mono',monospace;color:var(--text3);margin-top:2px;">26.03.2026 · 1 Gast gesamt</div>
+          </div>
+          <div style="font-size:36px;font-weight:800;color:#16a34a;">1</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:grid;grid-template-columns:160px 1fr;gap:0;align-items:start;padding:10px 14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);">
+            <div>
+              <div style="font-weight:700;font-size:13px;">Liam Mattern</div>
+              <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);">Team Rühmkorf</div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
+              <span style="background:rgba(124,58,237,.1);color:#6d28d9;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;">Leon Polaster</span>
+              <span style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);margin-left:4px;">1 Gast</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Geplante Events -->
+      <div class="card animate delay-4" id="geplante-events-section">
+        <div class="section-title" style="margin-bottom:14px;">Geplante Events 2026</div>
+        <div style="display:grid;grid-template-columns:repeat(9,1fr);gap:8px;">
+          <div style="text-align:center;padding:12px 6px;border-radius:8px;border:1px dashed var(--border2);">
+            <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);">APR</div>
+            <div style="font-size:18px;margin:4px 0;">📅</div>
+            <div style="font-size:9px;color:var(--text3);">offen</div>
+          </div>
+          <div style="text-align:center;padding:12px 6px;border-radius:8px;border:1px dashed var(--border2);">
+            <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);">MAI</div>
+            <div style="font-size:18px;margin:4px 0;">📅</div>
+            <div style="font-size:9px;color:var(--text3);">offen</div>
+          </div>
+          <div style="text-align:center;padding:12px 6px;border-radius:8px;border:1px dashed var(--border2);">
+            <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);">JUN</div>
+            <div style="font-size:18px;margin:4px 0;">📅</div>
+            <div style="font-size:9px;color:var(--text3);">offen</div>
+          </div>
+          <div style="text-align:center;padding:12px 6px;border-radius:8px;border:1px dashed var(--border2);">
+            <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);">JUL</div>
+            <div style="font-size:18px;margin:4px 0;">📅</div>
+            <div style="font-size:9px;color:var(--text3);">offen</div>
+          </div>
+          <div style="text-align:center;padding:12px 6px;border-radius:8px;border:1px dashed var(--border2);">
+            <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);">AUG</div>
+            <div style="font-size:18px;margin:4px 0;">📅</div>
+            <div style="font-size:9px;color:var(--text3);">offen</div>
+          </div>
+          <div style="text-align:center;padding:12px 6px;border-radius:8px;border:1px dashed var(--border2);">
+            <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);">SEP</div>
+            <div style="font-size:18px;margin:4px 0;">📅</div>
+            <div style="font-size:9px;color:var(--text3);">offen</div>
+          </div>
+          <div style="text-align:center;padding:12px 6px;border-radius:8px;border:1px dashed var(--border2);">
+            <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);">OKT</div>
+            <div style="font-size:18px;margin:4px 0;">📅</div>
+            <div style="font-size:9px;color:var(--text3);">offen</div>
+          </div>
+          <div style="text-align:center;padding:12px 6px;border-radius:8px;border:1px dashed var(--border2);">
+            <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);">NOV</div>
+            <div style="font-size:18px;margin:4px 0;">📅</div>
+            <div style="font-size:9px;color:var(--text3);">offen</div>
+          </div>
+          <div style="text-align:center;padding:12px 6px;border-radius:8px;border:1px dashed var(--border2);">
+            <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);">DEZ</div>
+            <div style="font-size:18px;margin:4px 0;">📅</div>
+            <div style="font-size:9px;color:var(--text3);">offen</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- ═══ TEAM PAGE ═══ -->
+    <div id="page-team" class="page">
+      <div class="grid-4 gap animate">
+        <div class="stat-card">
+          <div class="stat-header"><div class="stat-label">BM Franke · Direkt</div><div class="stat-icon team-franke" style="border-radius:8px;">BM</div></div>
+          <div class="stat-number" style="color:#7ba7ff;">15</div>
+          <div class="stat-meta"><div class="badge" style="background:rgba(79,124,255,.15);color:#7ba7ff;">direkte Mitglieder</div><span style="font-size:10px;color:var(--text3);">Gesamt 30 inkl. SBs</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header"><div class="stat-label">SB Ketterer</div><div class="stat-icon team-ketterer" style="border-radius:8px;">SB</div></div>
+          <div class="stat-number" style="color:#4ade80;">5</div>
+          <div class="stat-meta"><div class="badge badge-green">Senior Berater</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header"><div class="stat-label">SB Lison</div><div class="stat-icon team-lison" style="border-radius:8px;">SB</div></div>
+          <div class="stat-number" style="color:#fbbf24;">2</div>
+          <div class="stat-meta"><div class="badge badge-yellow">Senior Berater</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header"><div class="stat-label">SB Rühmkorf</div><div class="stat-icon team-ruhmkorf" style="border-radius:8px;">SB</div></div>
+          <div class="stat-number" style="color:#c084fc;">8</div>
+          <div class="stat-meta"><div class="badge badge-purple">Senior Berater</div></div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="card animate">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Vollständige Team-Liste</div>
+            <div class="section-sub">30 MITGLIEDER · STAND MÄRZ 2026</div>
+          </div>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Teambereich</th>
+              <th>Funktion</th>
+              <th>Events Q1</th>
+              <th>SPH Q1</th>
+              <th>EG1 Q1</th>
+            </tr>
+          </thead>
+          <tbody id="team-table-body">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══ ORGANIGRAMM PAGE ═══ -->
+    <div id="page-organigramm" class="page">
+
+      <!-- Legende + Benchmarking oben -->
+      <div class="grid-4 gap animate" style="margin-bottom:20px;">
+        <div class="stat-card">
+          <div class="stat-header"><div class="stat-label">BM Franke · direkt</div><div class="stat-icon team-franke" style="border-radius:8px;font-size:11px;">BM</div></div>
+          <div class="stat-number" style="color:#7ba7ff;">15</div>
+          <div class="stat-meta"><div class="badge" style="background:rgba(79,124,255,.15);color:#7ba7ff;">ohne SB-Bereiche</div><span style="font-size:10px;color:var(--text3);">Gesamt 30</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header"><div class="stat-label">SB Ketterer</div><div class="stat-icon team-ketterer" style="border-radius:8px;font-size:11px;">SB</div></div>
+          <div class="stat-number" style="color:#4ade80;">5</div>
+          <div class="stat-meta"><div class="badge badge-green">Senior Berater</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header"><div class="stat-label">SB Lison</div><div class="stat-icon team-lison" style="border-radius:8px;font-size:11px;">SB</div></div>
+          <div class="stat-number" style="color:#fbbf24;">2</div>
+          <div class="stat-meta"><div class="badge badge-yellow">Senior Berater</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header"><div class="stat-label">SB Rühmkorf</div><div class="stat-icon team-ruhmkorf" style="border-radius:8px;font-size:11px;">SB</div></div>
+          <div class="stat-number" style="color:#c084fc;">8</div>
+          <div class="stat-meta"><div class="badge badge-purple">Senior Berater</div></div>
+        </div>
+      </div>
+
+      <!-- Organigramm als Spalten-Layout -->
+      <div class="card animate" style="overflow-x:auto;">
+        <div style="margin-bottom:20px;display:flex;align-items:center;gap:16px;">
+          <div class="section-title">Organigramm · Team Franke</div>
+          <div style="display:flex;gap:10px;margin-left:auto;flex-wrap:wrap;">
+            <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);"><span style="width:10px;height:10px;border-radius:3px;background:#7b5fff;display:inline-block;"></span>Branch Manager</span>
+            <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);"><span style="width:10px;height:10px;border-radius:3px;background:#22c55e;display:inline-block;"></span>Senior Berater</span>
+            <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);"><span style="width:10px;height:10px;border-radius:3px;background:#4f7cff;display:inline-block;"></span>Direkte Franke</span>
+            <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);"><span style="width:10px;height:10px;border-radius:3px;background:#2a2f3d;display:inline-block;"></span>Mitglieder</span>
+          </div>
+        </div>
+
+        <!-- BM Zeile -->
+        <div style="display:flex;justify-content:center;margin-bottom:8px;">
+          <div style="background:linear-gradient(135deg,rgba(91,53,224,.12),rgba(37,87,232,.12));border:1px solid rgba(91,53,224,.35);border-radius:10px;padding:10px 24px;display:flex;align-items:center;gap:10px;">
+            <div class="avatar" style="background:linear-gradient(135deg,#5b35e0,#2557e8);color:#fff;width:34px;height:34px;font-size:12px;">HF</div>
+            <div>
+              <div style="font-weight:800;font-size:13px;">Henrik Franke</div>
+              <div style="font-size:10px;font-family:'Space Mono',monospace;color:#7ba7ff;">Branch Manager · Gesamt 30</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Verbindungslinie BM nach unten -->
+        <div style="display:flex;justify-content:center;"><div style="width:1px;height:16px;background:var(--border2);"></div></div>
+        <div style="height:1px;background:var(--border2);margin:0 5% 0 5%;"></div>
+
+        <!-- Spalten: 4 Bereiche nebeneinander -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-top:0;padding-top:0;">
+
+          <!-- ─── SPALTE 1: Franke direkt ─── -->
+          <div>
+            <div style="display:flex;justify-content:center;"><div style="width:1px;height:16px;background:var(--border2);"></div></div>
+            <div style="background:rgba(37,87,232,.05);border:1px solid rgba(37,87,232,.18);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:6px;">
+              <div style="font-size:9px;font-family:'Space Mono',monospace;color:#1a44b8;text-align:center;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Franke direkt · 15</div>
+
+              <!-- Einfache direkte ohne Sub -->
+              <div class="org-node-f">Rune Flohr</div>
+              <div class="org-node-f">Hendrik Hartmann</div>
+              <div class="org-node-f">Philipp Ihrcke</div>
+              <div class="org-node-f">Fynn Dittmann</div>
+              <div class="org-node-f">Lukas Oelmann</div>
+              <div class="org-node-f">Lasse Peesel</div>
+              <div class="org-node-f">Moritz Wüstefeld</div>
+              <div class="org-node-f">Patrick Wilkending</div>
+
+              <!-- Marcel Speder mit Sub -->
+              <div class="org-node-f" style="border-color:rgba(79,124,255,.5);">Marcel Speder</div>
+              <div style="margin-left:12px;border-left:2px solid var(--border2);padding-left:8px;display:flex;flex-direction:column;gap:4px;">
+                <div class="org-node-m">Jonah Faßhauer</div>
+                <div class="org-node-m">Marc-A. Wolter</div>
+              </div>
+
+              <!-- Nils Kanne mit Sub -->
+              <div class="org-node-f" style="border-color:rgba(79,124,255,.5);">Nils Kanne</div>
+              <div style="margin-left:12px;border-left:2px solid var(--border2);padding-left:8px;display:flex;flex-direction:column;gap:4px;">
+                <div class="org-node-m">Adrian Stagner</div>
+                <div class="org-node-m">Sören Meyer</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ─── SPALTE 2: Team Ketterer ─── -->
+          <div>
+            <div style="display:flex;justify-content:center;"><div style="width:1px;height:16px;background:var(--border2);"></div></div>
+            <div style="background:rgba(22,163,74,.05);border:1px solid rgba(22,163,74,.2);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:6px;">
+              <div style="font-size:9px;font-family:'Space Mono',monospace;color:#15803d;text-align:center;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">SB Ketterer · 5</div>
+
+              <!-- Nick Ketterer als SB-Kopf -->
+              <div class="org-node-sb" style="background:rgba(22,163,74,.1);border-color:rgba(34,197,94,.4);color:#4ade80;">Nick Ketterer</div>
+
+              <div style="margin-left:12px;border-left:2px solid rgba(34,197,94,.2);padding-left:8px;display:flex;flex-direction:column;gap:4px;">
+                <div class="org-node-m">Kareen F. Almarez</div>
+                <div class="org-node-m">Finn Groth</div>
+
+                <!-- Oscar mit Sub -->
+                <div class="org-node-m" style="border-color:rgba(34,197,94,.3);">Oscar Houtrow</div>
+                <div style="margin-left:12px;border-left:2px solid var(--border2);padding-left:8px;">
+                  <div class="org-node-m">Sven Rittmeier</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ─── SPALTE 3: Team Lison ─── -->
+          <div>
+            <div style="display:flex;justify-content:center;"><div style="width:1px;height:16px;background:var(--border2);"></div></div>
+            <div style="background:rgba(217,119,6,.05);border:1px solid rgba(217,119,6,.2);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:6px;">
+              <div style="font-size:9px;font-family:'Space Mono',monospace;color:#b45309;text-align:center;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">SB Lison · 2</div>
+
+              <div class="org-node-sb" style="background:rgba(217,119,6,.1);border-color:rgba(245,158,11,.4);color:#fbbf24;">Yves Lison</div>
+
+              <div style="margin-left:12px;border-left:2px solid rgba(245,158,11,.2);padding-left:8px;">
+                <div class="org-node-m">Rene Korth</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ─── SPALTE 4: Team Rühmkorf ─── -->
+          <div>
+            <div style="display:flex;justify-content:center;"><div style="width:1px;height:16px;background:var(--border2);"></div></div>
+            <div style="background:rgba(124,58,237,.05);border:1px solid rgba(124,58,237,.2);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:6px;">
+              <div style="font-size:9px;font-family:'Space Mono',monospace;color:#6d28d9;text-align:center;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">SB Rühmkorf · 8</div>
+
+              <div class="org-node-sb" style="background:rgba(124,58,237,.1);border-color:rgba(168,85,247,.4);color:#c084fc;">Hauke Rühmkorf</div>
+
+              <div style="margin-left:12px;border-left:2px solid rgba(168,85,247,.2);padding-left:8px;display:flex;flex-direction:column;gap:4px;">
+                <div class="org-node-m">Lucas Celnik</div>
+                <div class="org-node-m">Liam Mattern</div>
+                <div style="margin-left:12px;border-left:2px solid var(--border2);padding-left:8px;">
+                  <div class="org-node-m">Leon Polaster</div>
+                </div>
+                <div class="org-node-m">Daniel Narloch</div>
+                <div class="org-node-m">Luc Rinke</div>
+
+                <!-- Daniel Teschner mit Sub -->
+                <div class="org-node-m" style="border-color:rgba(168,85,247,.3);">Daniel Teschner</div>
+                <div style="margin-left:12px;border-left:2px solid var(--border2);padding-left:8px;">
+                  <div class="org-node-m">Ole Kriesmann</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /grid -->
+      </div><!-- /card -->
+
+      <!-- Neue Mitglieder -->
+      <div class="card animate delay-2" style="margin-top:16px;">
+        <div class="section-title" style="margin-bottom:14px;">Neue Mitglieder 2026</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:8px;background:rgba(22,163,74,.06);border:1px solid rgba(22,163,74,.18);border-radius:8px;padding:8px 12px;">
+            <div class="avatar team-ketterer" style="width:26px;height:26px;font-size:9px;">SR</div>
+            <div><div style="font-size:12px;font-weight:700;">Sven Rittmeier</div><div style="font-size:10px;color:var(--text3);">Ketterer</div></div>
+            <div class="badge badge-green" style="margin-left:4px;">NEU</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;background:rgba(22,163,74,.06);border:1px solid rgba(22,163,74,.18);border-radius:8px;padding:8px 12px;">
+            <div class="avatar team-ketterer" style="width:26px;height:26px;font-size:9px;">KF</div>
+            <div><div style="font-size:12px;font-weight:700;">Kareen F. Almarez</div><div style="font-size:10px;color:var(--text3);">Ketterer</div></div>
+            <div class="badge badge-green" style="margin-left:4px;">NEU</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;background:rgba(22,163,74,.06);border:1px solid rgba(22,163,74,.18);border-radius:8px;padding:8px 12px;">
+            <div class="avatar team-ruhmkorf" style="width:26px;height:26px;font-size:9px;">OK</div>
+            <div><div style="font-size:12px;font-weight:700;">Ole Kriesmann</div><div style="font-size:10px;color:var(--text3);">Rühmkorf</div></div>
+            <div class="badge badge-green" style="margin-left:4px;">NEU</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;background:rgba(22,163,74,.06);border:1px solid rgba(22,163,74,.18);border-radius:8px;padding:8px 12px;">
+            <div class="avatar team-ruhmkorf" style="width:26px;height:26px;font-size:9px;">DN</div>
+            <div><div style="font-size:12px;font-weight:700;">Daniel Narloch</div><div style="font-size:10px;color:var(--text3);">Rühmkorf</div></div>
+            <div class="badge badge-green" style="margin-left:4px;">NEU</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;background:rgba(22,163,74,.06);border:1px solid rgba(22,163,74,.18);border-radius:8px;padding:8px 12px;">
+            <div class="avatar team-ruhmkorf" style="width:26px;height:26px;font-size:9px;">LP</div>
+            <div><div style="font-size:12px;font-weight:700;">Leon Polaster</div><div style="font-size:10px;color:var(--text3);">Rühmkorf · unter Liam Mattern</div></div>
+            <div class="badge badge-green" style="margin-left:4px;">NEU</div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- ═══ KOMPETENZ PAGE ═══ -->
+    <div id="page-kompetenz" class="page">
+
+      <!-- Ansicht-Umschalter -->
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        <div class="view-tab active" id="tab-kompetenz-fk"   onclick="setView('kompetenz','fk',this)">👔 Führungskraft</div>
+        <div class="view-tab"        id="tab-kompetenz-ma"   onclick="setView('kompetenz','ma',this)">👤 Mitarbeiter</div>
+        <div class="view-tab"        id="tab-kompetenz-ges"  onclick="setView('kompetenz','ges',this)">🏢 Gesamtbereich</div>
+      </div>
+
+      <!-- Filter Controls -->
+      <div class="db-controls animate" id="ctrl-kompetenz">
+        <!-- FK: Teamkopf only -->
+        <div id="kompetenz-fk-ctrl" class="view-ctrl">
+          <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);margin-bottom:4px;letter-spacing:0.8px;text-transform:uppercase;">TEAMKOPF</div>
+          <select class="db-select" id="komp-team" onchange="updateKompetenz()">
+            <option value="Franke">Franke (BM) · 15</option>
+            <option value="Ketterer">Ketterer (SB) · 5</option>
+            <option value="Lison">Lison (SB) · 2</option>
+            <option value="Rühmkorf">Rühmkorf (SB) · 8</option>
+          </select>
+        </div>
+        <!-- MA: Teamkopf + Person -->
+        <div id="kompetenz-ma-ctrl" class="view-ctrl" style="display:none;gap:10px;align-items:flex-end;">
+          <div>
+            <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);margin-bottom:4px;letter-spacing:0.8px;text-transform:uppercase;">TEAMKOPF</div>
+            <select class="db-select" id="komp-team-ma" onchange="onTeamChange('komp-team-ma','komp-person',updateKompetenz)">
+              <option value="alle">Alle</option>
+              <option value="Franke">Franke (BM)</option>
+              <option value="Ketterer">Ketterer (SB)</option>
+              <option value="Lison">Lison (SB)</option>
+              <option value="Rühmkorf">Rühmkorf (SB)</option>
+            </select>
+          </div>
+          <div>
+            <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);margin-bottom:4px;letter-spacing:0.8px;text-transform:uppercase;">MITARBEITER</div>
+            <select class="db-select" id="komp-person" onchange="updateKompetenz()">
+              <option value="alle">Alle</option>
+            </select>
+          </div>
+        </div>
+        <!-- GES: no filter needed -->
+        <div id="kompetenz-ges-ctrl" class="view-ctrl" style="display:none;">
+          <div style="font-size:13px;font-weight:700;color:var(--text2);">Gesamtbereich Franke · 30 Mitglieder</div>
+        </div>
+
+        <div class="db-divider"></div>
+        <div>
+          <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);margin-bottom:4px;letter-spacing:0.8px;text-transform:uppercase;">ZEITRAUM</div>
+          <select class="db-select" id="komp-zeit" onchange="updateKompetenz()">
+            <option value="q1">Q1 2026</option>
+            <option value="q2">Q2 2026</option>
+            <option value="q3">Q3 2026</option>
+            <option value="q4">Q4 2026</option>
+            <option value="jahr">Gesamtjahr 2026</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- Ansicht-Label -->
+      <div id="kompetenz-view-label" style="font-size:11px;font-family:'Space Mono',monospace;color:var(--text3);margin-bottom:12px;padding:0 2px;">
+        FÜHRUNGSKRAFT-ANSICHT · Ziel = Teamgröße × SMAC-Benchmark
+      </div>
+
+      <!-- Drei Donuts -->
+      <div class="grid-3 gap animate">
+        <div class="card" style="display:flex;flex-direction:column;align-items:center;padding:28px 20px;">
+          <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:20px;">Eventbesuche</div>
+          <div style="position:relative;width:160px;height:160px;margin-bottom:20px;">
+            <svg width="160" height="160" viewBox="0 0 160 160">
+              <circle cx="80" cy="80" r="64" fill="none" stroke="#e8ecf2" stroke-width="14"/>
+              <circle id="dk-ev" cx="80" cy="80" r="64" fill="none" stroke="#d97706" stroke-width="14"
+                stroke-linecap="round" stroke-dasharray="402" stroke-dashoffset="380"
+                transform="rotate(-90 80 80)" style="transition:stroke-dashoffset .9s cubic-bezier(.4,0,.2,1),stroke .4s;"/>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+              <div id="dk-ev-pct" style="font-size:34px;font-weight:800;letter-spacing:-2px;color:#d97706;line-height:1;">—</div>
+              <div style="font-size:10px;color:var(--text3);font-family:'Space Mono',monospace;margin-top:2px;">Zielerreichung</div>
+            </div>
+          </div>
+          <div id="dk-ev-badge" class="badge badge-yellow" style="margin-bottom:10px;">Wird berechnet</div>
+          <div style="font-size:12px;color:var(--text2);text-align:center;">Ist: <strong id="kist-ev">—</strong> · Ziel: <strong id="kzel-ev">—</strong></div>
+        </div>
+
+        <div class="card" style="display:flex;flex-direction:column;align-items:center;padding:28px 20px;">
+          <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:20px;">Schulungsquote</div>
+          <div style="position:relative;width:160px;height:160px;margin-bottom:20px;">
+            <svg width="160" height="160" viewBox="0 0 160 160">
+              <circle cx="80" cy="80" r="64" fill="none" stroke="#e8ecf2" stroke-width="14"/>
+              <circle id="dk-sch" cx="80" cy="80" r="64" fill="none" stroke="#d97706" stroke-width="14"
+                stroke-linecap="round" stroke-dasharray="402" stroke-dashoffset="380"
+                transform="rotate(-90 80 80)" style="transition:stroke-dashoffset .9s cubic-bezier(.4,0,.2,1),stroke .4s;"/>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+              <div id="dk-sch-pct" style="font-size:34px;font-weight:800;letter-spacing:-2px;color:#d97706;line-height:1;">—</div>
+              <div style="font-size:10px;color:var(--text3);font-family:'Space Mono',monospace;margin-top:2px;">Zielerreichung</div>
+            </div>
+          </div>
+          <div id="dk-sch-badge" class="badge badge-yellow" style="margin-bottom:10px;">Wird berechnet</div>
+          <div style="font-size:12px;color:var(--text2);text-align:center;">Ist: <strong id="kist-sch">—</strong> · Max: <strong id="kzel-sch">—</strong></div>
+        </div>
+
+        <div class="card" style="display:flex;flex-direction:column;align-items:center;padding:28px 20px;">
+          <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:20px;">Positionssteckbrief</div>
+          <div style="position:relative;width:160px;height:160px;margin-bottom:20px;">
+            <svg width="160" height="160" viewBox="0 0 160 160">
+              <circle cx="80" cy="80" r="64" fill="none" stroke="#e8ecf2" stroke-width="14"/>
+              <circle id="dk-stk" cx="80" cy="80" r="64" fill="none" stroke="#d97706" stroke-width="14"
+                stroke-linecap="round" stroke-dasharray="402" stroke-dashoffset="380"
+                transform="rotate(-90 80 80)" style="transition:stroke-dashoffset .9s cubic-bezier(.4,0,.2,1),stroke .4s;"/>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+              <div id="dk-stk-pct" style="font-size:34px;font-weight:800;letter-spacing:-2px;color:#d97706;line-height:1;">—</div>
+              <div style="font-size:10px;color:var(--text3);font-family:'Space Mono',monospace;margin-top:2px;">Zielerreichung</div>
+            </div>
+          </div>
+          <div id="dk-stk-badge" class="badge badge-yellow" style="margin-bottom:10px;">Wird berechnet</div>
+          <div style="font-size:12px;color:var(--text2);text-align:center;">Ist: <strong id="kist-stk">—</strong> · Ziel: <strong id="kzel-stk">—</strong></div>
+        </div>
+      </div>
+
+      <!-- Personen/Team-Karte -->
+      <div class="card animate delay-2" style="margin-top:4px;display:flex;align-items:center;gap:20px;">
+        <div id="kompetenz-card-avatar" class="avatar" style="width:48px;height:48px;font-size:16px;flex-shrink:0;background:var(--surface2);color:var(--text3);">—</div>
+        <div style="flex:1;">
+          <div id="kompetenz-card-name" style="font-size:18px;font-weight:800;letter-spacing:-0.3px;">Franke · FK-Ansicht</div>
+          <div id="kompetenz-card-sub" style="font-size:11px;font-family:'Space Mono',monospace;color:var(--text3);margin-top:2px;">Q1 2026</div>
+        </div>
+        <div style="display:flex;gap:24px;text-align:center;">
+          <div>
+            <div id="ksum-ev" style="font-size:28px;font-weight:800;color:var(--accent);">—</div>
+            <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);">Events</div>
+          </div>
+          <div>
+            <div id="ksum-sch" style="font-size:28px;font-weight:800;color:var(--cyan);">—</div>
+            <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);">Schulung</div>
+          </div>
+          <div>
+            <div id="ksum-stk" style="font-size:28px;font-weight:800;color:var(--green);">—</div>
+            <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);">Steckbrief</div>
+          </div>
+        </div>
+        <div style="margin-left:8px;">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:4px;font-family:'Space Mono',monospace;">→ RANKING</div>
+          <div onclick="showPage('ranking-kompetenz',null,'kompetenz')" style="cursor:pointer;background:var(--accent);color:#fff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;transition:opacity .2s;" onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">Ranking öffnen</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══ RANKING WACHSTUM PAGE ═══ -->
+    <div id="page-ranking-wachstum" class="page">
+      <div class="db-controls animate">
+        <div>
+          <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);margin-bottom:4px;letter-spacing:0.8px;text-transform:uppercase;">ZEITRAUM</div>
+          <select class="db-select" id="rank-w-zeit" onchange="updateRanking('wachstum')">
+            <optgroup label="Quartal">
+              <option value="q1">Q1 2026</option>
+              <option value="q2">Q2 2026</option>
+              <option value="q3">Q3 2026</option>
+              <option value="q4">Q4 2026</option>
+              <option value="jahr">Gesamtjahr 2026</option>
+            </optgroup>
+          </select>
+        </div>
+        <div>
+          <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);margin-bottom:4px;letter-spacing:0.8px;text-transform:uppercase;">KPI</div>
+          <select class="db-select" id="rank-w-kpi" onchange="updateRanking('wachstum')">
+            <option value="events">Eventteilnehmer</option>
+            <option value="sph">Sichtungsgespräche</option>
+            <option value="eg1">Einstellungsgespräche</option>
+          </select>
+        </div>
+        <div class="db-divider"></div>
+        <div style="font-size:12px;color:var(--text3);">← <span style="cursor:pointer;color:var(--accent);" onclick="showPage('wachstum',document.getElementById('nav-wachstum'))">Zurück zum Dashboard</span></div>
+      </div>
+      <div class="card animate">
+        <div class="section-title" style="margin-bottom:16px;">🏆 Ranking · Wachstum</div>
+        <div id="ranking-wachstum-body"></div>
+      </div>
+    </div>
+
+    <!-- ═══ RANKING UMSATZ PAGE ═══ -->
+    <div id="page-ranking-umsatz" class="page">
+      <div class="db-controls animate">
+        <div>
+          <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);margin-bottom:4px;letter-spacing:0.8px;text-transform:uppercase;">TERMINART</div>
+          <select class="db-select" id="rank-u-kpi" onchange="updateRanking('umsatz')">
+            <option value="gesamt">Gesamt (S1+S2+S3+Service)</option>
+            <option value="s1">S1 · Erstgespräch</option>
+            <option value="s2">S2 · Verkaufsgespräch</option>
+            <option value="s3">S3 · Abschlussgespräch</option>
+            <option value="service">Service · Bestand</option>
+          </select>
+        </div>
+        <div class="db-divider"></div>
+        <div>
+          <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);margin-bottom:4px;letter-spacing:0.8px;text-transform:uppercase;">ZEITRAUM</div>
+          <select class="db-select" id="rank-u-zeit" onchange="updateRanking('umsatz')">
+            <option value="q1">Q1 2026</option>
+            <option value="q2">Q2 2026</option>
+            <option value="q3">Q3 2026</option>
+            <option value="q4">Q4 2026</option>
+            <option value="jahr">Gesamtjahr 2026</option>
+          </select>
+        </div>
+        <div class="db-divider"></div>
+        <div style="font-size:12px;color:var(--text3);">← <span style="cursor:pointer;color:var(--accent);" onclick="showPage('umsatz',document.getElementById('nav-umsatz'))">Zurück zum Dashboard</span></div>
+      </div>
+      <div class="card animate">
+        <div class="section-title" id="ranking-umsatz-title" style="margin-bottom:16px;">🏆 Ranking · Gesamt-Termine</div>
+        <div id="ranking-umsatz-body"></div>
+      </div>
+    </div>
+
+    <!-- ═══ RANKING KOMPETENZ PAGE ═══ -->
+    <div id="page-ranking-kompetenz" class="page">
+      <div class="db-controls animate">
+        <div>
+          <div style="font-size:9px;font-family:'Space Mono',monospace;color:var(--text3);margin-bottom:4px;letter-spacing:0.8px;text-transform:uppercase;">ZEITRAUM</div>
+          <select class="db-select">
+            <option value="q1">Q1 2026</option>
+          </select>
+        </div>
+        <div class="db-divider"></div>
+        <div style="font-size:12px;color:var(--text3);">← <span style="cursor:pointer;color:var(--accent);" onclick="showPage('kompetenz',document.getElementById('nav-kompetenz'))">Zurück zum Dashboard</span></div>
+      </div>
+      <div class="card animate">
+        <div class="section-title" style="margin-bottom:16px;">🏆 Ranking · Kompetenz (Eventbesuche)</div>
+        <div id="ranking-kompetenz-body"></div>
+      </div>
+    </div>
+  </div><!-- /content -->
+</main>
+
+<script>
+// ── DATA ──
+// Daten pro Quartal — q1=real, q2/q3/q4=noch offen
+const teamData = [
+  //                                          ── Q1 ──────────────────────────────  ── Q2 ──  ── Q3 ──  ── Q4 ──
+  //                                          ev  sph eg1 u   s12 s3              ev sph eg1  ev sph eg1  ev sph eg1
+  {name:'Henrik Franke',    team:'Franke',   head:true,
+    q1:{events:2,sph:0,eg1:0,s1:0,s2:4,s3:1,service:19,schulung:0},
+    q2:{events:0,sph:0,eg1:0,s1:1,s2:0,s3:0,service:4,schulung:0},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Fynn Dittmann',    team:'Franke',   head:false,
+    q1:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:2},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Jonah Faßhauer',   team:'Franke',   head:false,
+    q1:{events:3,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:4},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Lukas Oelmann',    team:'Franke',   head:false,
+    q1:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Marcel Speder',    team:'Franke',   head:false,
+    q1:{events:3,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:2},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:1,service:0,schulung:1},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Sören Meyer',      team:'Franke',   head:false,
+    q1:{events:0,sph:0,eg1:0,s1:0,s2:1,s3:2,service:1,schulung:3},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:1},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Nils Kanne',       team:'Franke',   head:false,
+    q1:{events:0,sph:0,eg1:0,s1:1,s2:1,s3:0,service:0,schulung:3},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:1},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Adrian Stagner',   team:'Franke',   head:false,
+    q1:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:2},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Moritz Wüstefeld', team:'Franke',   head:false,
+    q1:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:1,schulung:0},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Rune Flohr',       team:'Franke',   head:false,
+    q1:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:3,schulung:0},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:2,schulung:0},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Jan Lottig',       team:'Franke',   head:false,
+    q1:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:2,schulung:0},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Patrick Wilkending',team:'Franke',  head:false,
+    q1:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:1},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:1},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Lasse Peesel',     team:'Franke',   head:false,
+    q1:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Hendrik Hartmann', team:'Franke',   head:false,
+    q1:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:5,schulung:2},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Philipp Ihrcke',   team:'Franke',   head:false,
+    q1:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Nick Ketterer',    team:'Ketterer', head:true,
+    q1:{events:2,sph:0,eg1:0,s1:0,s2:3,s3:2,service:1,schulung:0},
+    q2:{events:0,sph:0,eg1:0,s1:1,s2:3,s3:1,service:1,schulung:0},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Oscar Houtrow',    team:'Ketterer', head:false,
+    q1:{events:2,sph:1,eg1:1,s1:5,s2:2,s3:1,service:1,schulung:0},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Sven Rittmeier',   team:'Ketterer', head:false,
+    q1:{events:2,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Kareen F. Almarez',team:'Ketterer', head:false,
+    q1:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Finn Groth',       team:'Ketterer', head:false,
+    q1:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Yves Lison',       team:'Lison',    head:true,
+    q1:{events:1,sph:0,eg1:0,s1:4,s2:2,s3:1,service:3,schulung:3},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:1,schulung:1},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Rene Korth',       team:'Lison',    head:false,
+    q1:{events:0,sph:0,eg1:0,s1:0,s2:1,s3:1,service:0,schulung:5},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Hauke Rühmkorf',   team:'Rühmkorf', head:true,
+    q1:{events:2,sph:1,eg1:0,s1:3,s2:4,s3:3,service:4,schulung:2},
+    q2:{events:0,sph:0,eg1:0,s1:3,s2:1,s3:1,service:1,schulung:2},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Daniel Teschner',  team:'Rühmkorf', head:false,
+    q1:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Ole Kriesmann',    team:'Rühmkorf', head:false,
+    q1:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Lukas Celnik',     team:'Rühmkorf', head:false,
+    q1:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Liam Mattern',     team:'Rühmkorf', head:false,
+    q1:{events:1,sph:0,eg1:0,s1:0,s2:0,s3:0,service:1,schulung:4},
+    q2:{events:0,sph:0,eg1:0,s1:1,s2:0,s3:0,service:2,schulung:2},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Leon Polaster',     team:'Rühmkorf', head:false,
+    q1:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:1},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:1},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Luc Rinke',        team:'Rühmkorf', head:false,
+    q1:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+  {name:'Daniel Narloch',   team:'Rühmkorf', head:false,
+    q1:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:2},
+    q2:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q3:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0},
+    q4:{events:0,sph:0,eg1:0,s1:0,s2:0,s3:0,service:0,schulung:0}},
+];
+
+// Helper: get summed value for a person across selected time period
+function getVal(p, kpi, zKey) {
+  if(zKey === 'jahr') {
+    return (p.q1[kpi]||0) + (p.q2[kpi]||0) + (p.q3[kpi]||0) + (p.q4[kpi]||0);
+  }
+  return p[zKey] ? (p[zKey][kpi]||0) : 0;
+}
+
+// Helper: get schulungsquote % for a person (vs. 75% Ziel)
+function getSchulungPct(p, zKey) {
+  const besucht  = getVal(p, 'schulung', zKey);
+  const pauschal = ZIELE.schulung_pauschal[zKey] || 3;
+  const ziel     = ZIELE.schulung_ziel[zKey] || 15.75;
+  return ziel > 0 ? Math.min(Math.round((besucht + pauschal) / ziel * 100), 100) : 0;
+}
+
+const teamColors = {Franke:'team-franke',Ketterer:'team-ketterer',Lison:'team-lison','Rühmkorf':'team-ruhmkorf'};
+const TEAM_SIZES = {Franke:15, Ketterer:5, Lison:2, 'Rühmkorf':8, alle:30};
+
+// Current view state per dashboard
+const viewState = {wachstum:'fk', umsatz:'fk', kompetenz:'fk'};
+
+function setView(dash, view, el) {
+  viewState[dash] = view;
+  // Update tab styles
+  ['fk','ma','ges'].forEach(v => {
+    const t = document.getElementById('tab-'+dash+'-'+v);
+    if(t) t.classList.toggle('active', v===view);
+  });
+  // Show/hide controls
+  const fkCtrl  = document.getElementById(dash+'-fk-ctrl');
+  const maCtrl  = document.getElementById(dash+'-ma-ctrl');
+  const gesCtrl = document.getElementById(dash+'-ges-ctrl');
+  if(fkCtrl)  fkCtrl.style.display  = view==='fk'  ? 'flex' : 'none';
+  if(maCtrl)  maCtrl.style.display  = view==='ma'  ? 'flex' : 'none';
+  if(gesCtrl) gesCtrl.style.display = view==='ges' ? 'flex' : 'none';
+  // Update label
+  const label = document.getElementById(dash+'-view-label');
+  const labels = {
+    fk:  'FÜHRUNGSKRAFT-ANSICHT · Ziel = Teamgröße × SMAC-Benchmark',
+    ma:  'MITARBEITER-ANSICHT · Ziel = 1 Person × SMAC-Benchmark',
+    ges: 'GESAMTBEREICH-ANSICHT · Alle 30 Mitglieder · Ziel = 30 × SMAC-Benchmark'
+  };
+  if(label) label.textContent = labels[view];
+  // Re-run filter
+  if(dash==='wachstum') filterWachstum();
+  if(dash==='umsatz')   filterUmsatz();
+  if(dash==='kompetenz') updateKompetenz();
+}
+
+function getFilteredAndN(dash) {
+  const view = viewState[dash] || 'fk';
+  let team='Franke', person='alle', n=15;
+
+  if(view==='fk') {
+    const ts = document.getElementById(dash==='wachstum'?'w-team':dash==='umsatz'?'u-team':'komp-team');
+    team = ts ? ts.value : 'Franke';
+    person = 'alle';
+    n = TEAM_SIZES[team] || 15;
+  } else if(view==='ma') {
+    const ts = document.getElementById(dash==='wachstum'?'w-team-ma':dash==='umsatz'?'u-team-ma':'komp-team-ma');
+    const ps = document.getElementById(dash==='wachstum'?'w-person':dash==='umsatz'?'u-person':'komp-person');
+    team   = ts ? ts.value : 'alle';
+    person = ps ? ps.value : 'alle';
+    n = person !== 'alle' ? 1 : (team !== 'alle' ? TEAM_SIZES[team] : 30);
+  } else { // ges
+    team='alle'; person='alle'; n=29;
+  }
+  const filtered = teamData.filter(p=>
+    (team==='alle'||p.team===team) && (person==='alle'||p.name===person)
+  );
+  return {filtered, n, team, person, view};
+}
+
+// SMAC Ziele pro Person
+const ZIELE = {
+  // Eventteilnehmer: 3/Quartal, 12/Jahr (SMAC)
+  events:   {q1:3,    q2:3,    q3:3,    q4:3,    jahr:12},
+  // Sichtungsgespräche: 6/Jahr → 1,5/Quartal
+  sph:      {q1:1.5,  q2:1.5,  q3:1.5,  q4:1.5,  jahr:6},
+  // Einstellungsgespräche: 5/Jahr → 1,25/Quartal
+  eg1:      {q1:1.25, q2:1.25, q3:1.25, q4:1.25, jahr:5},
+  // Umsatz Terminarten
+  s1:       {q1:12,   q2:12,   q3:12,   q4:12,   jahr:48},  // 4/Monat
+  s2:       {q1:9,    q2:9,    q3:9,    q4:9,    jahr:36},  // 3/Monat
+  s3:       {q1:6,    q2:6,    q3:6,    q4:6,    jahr:24},  // 2/Monat
+  // Schulung: 7 verfügbar/Monat, 1 pauschal → Ziel: 75% × 21 = 15,75 → 16/Q, 63/Jahr
+  // Pauschal 1/Monat zählt mit → besuchte + pauschal ÷ verfügbar = Quote
+  schulung_verfuegbar: {q1:21,   q2:21,   q3:21,   q4:21,   jahr:84},
+  schulung_pauschal:   {q1:3,    q2:3,    q3:3,    q4:3,    jahr:12},
+  schulung_ziel:       {q1:15.75,q2:15.75,q3:15.75,q4:15.75,jahr:63},
+  // Service: kein Ziel, nur tracken
+};
+
+// ── HELPERS ──
+function pctColor(p) {
+  if(p>=100) return '#16a34a';
+  if(p>=50)  return '#d97706';
+  return '#dc2626';
+}
+function pctBadge(p) {
+  if(p>=100) return 'badge-green';
+  if(p>=50)  return 'badge-yellow';
+  return 'badge-red';
+}
+function pctLabel(p) {
+  if(p>=100) return 'Ziel erreicht ✓';
+  if(p>=50)  return 'In Entwicklung';
+  return 'Handlungsbedarf';
+}
+
+// Global donut updater — used by all dashboards
+function updateDonut(ringId, pctElId, badgeId, pct) {
+  const ring  = document.getElementById(ringId);
+  const pctEl = document.getElementById(pctElId);
+  const badge = document.getElementById(badgeId);
+  if(!ring) return;
+  const col  = pctColor(pct);
+  const circ = parseFloat(ring.getAttribute('stroke-dasharray'));
+  ring.style.stroke = col;
+  ring.setAttribute('stroke-dashoffset', circ - circ * Math.min(pct,100)/100);
+  if(pctEl){ pctEl.textContent = pct+'%'; pctEl.style.color = col; }
+  if(badge){ badge.className = 'badge '+pctBadge(pct); badge.textContent = pctLabel(pct); }
+}
+
+// ── DROPDOWN ──
+function fillPersonDropdown(teamSel, personSel) {
+  const team = document.getElementById(teamSel).value;
+  const sel  = document.getElementById(personSel);
+  const prev = sel.value;
+  sel.innerHTML = '<option value="alle">Alle</option>';
+  teamData.filter(p => team==='alle' || p.team===team).forEach(p => {
+    const o = document.createElement('option');
+    o.value = p.name; o.textContent = p.name;
+    sel.appendChild(o);
+  });
+  // Restore previous selection if still valid
+  if([...sel.options].some(o=>o.value===prev)) sel.value = prev;
+}
+
+function onTeamChange(teamSel, personSel, callback) {
+  fillPersonDropdown(teamSel, personSel);
+  callback();
+}
+
+// ── PERSON CARD UPDATER ──
+function updatePersonCard(avatarId, nameId, subId, person, team, zeitLabel, extraIds, extraVals) {
+  const av = document.getElementById(avatarId);
+  const nm = document.getElementById(nameId);
+  const sb = document.getElementById(subId);
+  if(person !== 'alle') {
+    const p = teamData.find(x=>x.name===person);
+    if(p && av){ av.className='avatar '+(teamColors[p.team]||''); av.style.background=''; av.style.color=''; av.textContent=p.name.split(' ').map(w=>w[0]).slice(0,2).join(''); }
+    if(nm) nm.textContent = person;
+    if(sb) sb.textContent = (team!=='alle'?team+' · ':'')+zeitLabel+' 2026';
+  } else {
+    if(av){ av.className='avatar'; av.style.background='var(--surface2)'; av.style.color='var(--text3)'; av.textContent='—'; }
+    if(nm) nm.textContent = team==='alle'?'Alle Teambereiche':'Team '+team;
+    if(sb) sb.textContent = 'GESAMTANSICHT · '+zeitLabel+' 2026';
+  }
+  extraIds.forEach((id,i)=>{ const el=document.getElementById(id); if(el) el.textContent=extraVals[i]; });
+}
+
+// ── HELPERS ──
+function setText(id, val) { const el=document.getElementById(id); if(el) el.textContent=val; }
+
+function resetDonuts(ringIds) {
+  ringIds.forEach(id => {
+    const ring  = document.getElementById(id);
+    const pctEl = document.getElementById(id+'-pct');
+    const badge = document.getElementById(id+'-badge');
+    if(ring) { ring.style.stroke='#b8c0d0'; ring.setAttribute('stroke-dashoffset','402'); }
+    if(pctEl){ pctEl.textContent='—'; pctEl.style.color='var(--text3)'; }
+    if(badge){ badge.className='badge'; badge.style.background='var(--surface2)'; badge.style.color='var(--text3)'; badge.textContent='Bitte auswählen'; }
+  });
+}
+
+function setDonutPlaceholder(ringId, pctId, badgeId) {
+  const ring  = document.getElementById(ringId);
+  const pctEl = document.getElementById(pctId);
+  const badge = document.getElementById(badgeId);
+  if(ring) { ring.style.stroke='#b8c0d0'; ring.setAttribute('stroke-dashoffset','402'); }
+  if(pctEl){ pctEl.textContent='—'; pctEl.style.color='var(--text3)'; }
+  if(badge){ badge.className='badge'; badge.style.background='var(--surface2)'; badge.style.color='var(--text3)'; badge.textContent='Keine Daten'; }
+}
+
+function updateCardAvatar(avatarId, view, team, person) {
+  const av = document.getElementById(avatarId);
+  if(!av) return;
+  if(view==='ges') {
+    av.className='avatar'; av.style.background='linear-gradient(135deg,#2557e8,#5b35e0)'; av.style.color='#fff'; av.textContent='GF';
+  } else if(view==='fk') {
+    const clsMap={Franke:'team-franke',Ketterer:'team-ketterer',Lison:'team-lison','Rühmkorf':'team-ruhmkorf'};
+    av.className='avatar '+(clsMap[team]||''); av.style.background=''; av.style.color='';
+    av.textContent=team ? team.slice(0,2).toUpperCase() : 'FK';
+  } else {
+    if(person!=='alle') {
+      const p=teamData.find(x=>x.name===person);
+      if(p){ av.className='avatar '+(teamColors[p.team]||''); av.style.background=''; av.style.color=''; av.textContent=p.name.split(' ').map(w=>w[0]).slice(0,2).join(''); }
+    } else {
+      av.className='avatar'; av.style.background='var(--surface2)'; av.style.color='var(--text3)'; av.textContent='—';
+    }
+  }
+}
+
+// ── SHARED DASHBOARD UPDATER ──
+function updateDashboard(dash, kpis, zielKeys, donutIds, istIds, zielIds, sumIds, zeitLabel, n, filtered, team, person, view) {
+  kpis.forEach((kpi,i) => {
+    const tot  = filtered.reduce((s,p)=>s+getVal(p,kpi,zielKeys),0);
+    const ziel = n * (ZIELE[zielKeys[i]] ? ZIELE[zielKeys[i]][zielKeys[1]||'q1'] : 3);
+    // Actually use one zKey for all
+  });
+}
+
+// ── WACHSTUM ──
+function filterWachstum() {
+  const zeit  = document.getElementById('w-zeit').value;
+  const zKey  = ZIELE.events[zeit] !== undefined ? zeit : 'q1';
+  const zeitLabel = {q1:'Q1',q2:'Q2',q3:'Q3',q4:'Q4',jahr:'Gesamtjahr'}[zeit]||'Q1';
+  const {filtered, n, team, person, view} = getFilteredAndN('wachstum');
+
+  // MA view: require a person to be selected
+  if(view==='ma' && person==='alle') {
+    resetDonuts(['dw-ev','dw-sph','dw-eg1']);
+    setText('wachstum-card-name','← Bitte Mitarbeiter auswählen');
+    setText('wachstum-card-sub','Mitarbeiter-Ansicht · '+zeitLabel+' 2026');
+    updateCardAvatar('wachstum-card-avatar','ma','alle','alle');
+    return;
+  }
+
+  const totEv  = filtered.reduce((s,p)=>s+getVal(p,'events',zKey),0);
+  const totSph = filtered.reduce((s,p)=>s+getVal(p,'sph',zKey),0);
+  const totEg1 = filtered.reduce((s,p)=>s+getVal(p,'eg1',zKey),0);
+  // MA = 1 person target, FK = teamsize, GES = 29
+  const nZiel  = view==='ma' ? 1 : n;
+  const zEv    = nZiel * ZIELE.events[zKey];
+  const zSph   = nZiel * ZIELE.sph[zKey];
+  const zEg1   = nZiel * ZIELE.eg1[zKey];
+
+  updateDonut('dw-ev',  'dw-ev-pct',  'dw-ev-badge',  zEv >0?Math.round(totEv /zEv *100):0);
+  updateDonut('dw-sph', 'dw-sph-pct', 'dw-sph-badge', zSph>0?Math.round(totSph/zSph*100):0);
+  updateDonut('dw-eg1', 'dw-eg1-pct', 'dw-eg1-badge', zEg1>0?Math.round(totEg1/zEg1*100):0);
+
+  setText('wist-ev',totEv);  setText('wzel-ev',zEv);
+  setText('wist-sph',totSph); setText('wzel-sph',zSph);
+  setText('wist-eg1',totEg1); setText('wzel-eg1',zEg1);
+  setText('wsum-ev',totEv); setText('wsum-sph',totSph); setText('wsum-eg1',totEg1);
+
+  setText('wachstum-card-name',
+    view==='fk'  ? (team+' · Führungskraft · '+n+' Personen') :
+    view==='ges' ? 'Gesamtbereich Franke · 30 Personen' :
+                   person);
+  setText('wachstum-card-sub', zeitLabel+' 2026');
+  updateCardAvatar('wachstum-card-avatar', view, team, person);
+}
+
+// ── UMSATZ ──
+function filterUmsatz() {
+  const zeit  = document.getElementById('u-zeit').value;
+  const zKey  = ZIELE.s1[zeit] !== undefined ? zeit : 'q1';
+  const zeitLabel = {q1:'Q1',q2:'Q2',q3:'Q3',q4:'Q4',jahr:'Gesamtjahr'}[zeit]||'Q1';
+  const {filtered, n, team, person, view} = getFilteredAndN('umsatz');
+
+  if(view==='ma' && person==='alle') {
+    resetDonuts(['du-s1','du-s2','du-s3','du-svc']);
+    setText('umsatz-card-name','← Bitte Mitarbeiter auswählen');
+    setText('umsatz-card-sub','Mitarbeiter-Ansicht · '+zeitLabel+' 2026');
+    updateCardAvatar('umsatz-card-avatar','ma','alle','alle');
+    return;
+  }
+
+  const totS1  = filtered.reduce((s,p)=>s+getVal(p,'s1',zKey),0);
+  const totS2  = filtered.reduce((s,p)=>s+getVal(p,'s2',zKey),0);
+  const totS3  = filtered.reduce((s,p)=>s+getVal(p,'s3',zKey),0);
+  const totSvc = filtered.reduce((s,p)=>s+getVal(p,'service',zKey),0);
+  const nZiel  = view==='ma' ? 1 : n;
+  const zS1    = nZiel * ZIELE.s1[zKey];   // 12/Q, 48/Jahr
+  const zS2    = nZiel * ZIELE.s2[zKey];   //  9/Q, 36/Jahr
+  const zS3    = nZiel * ZIELE.s3[zKey];   //  6/Q, 24/Jahr
+
+  updateDonut('du-s1', 'du-s1-pct',  'du-s1-badge',  zS1>0?Math.round(totS1/zS1*100):0);
+  updateDonut('du-s2', 'du-s2-pct',  'du-s2-badge',  zS2>0?Math.round(totS2/zS2*100):0);
+  updateDonut('du-s3', 'du-s3-pct',  'du-s3-badge',  zS3>0?Math.round(totS3/zS3*100):0);
+
+  // Service: nur Ist anzeigen, kein Donut-Fill
+  const svcRing = document.getElementById('du-svc');
+  const svcPct  = document.getElementById('du-svc-pct');
+  const svcBdg  = document.getElementById('du-svc-badge');
+  if(svcRing){ svcRing.style.stroke='#b8c0d0'; svcRing.setAttribute('stroke-dashoffset', svcRing.getAttribute('stroke-dasharray')); }
+  if(svcPct) { svcPct.textContent=totSvc; svcPct.style.color='#0891b2'; }
+  if(svcBdg) { svcBdg.style.background='rgba(8,145,178,.1)'; svcBdg.style.color='#0891b2'; svcBdg.textContent='Nur Tracking'; }
+
+  setText('du-s1-ist',totS1);  setText('du-s1-ziel',zS1);
+  setText('du-s2-ist',totS2);  setText('du-s2-ziel',zS2);
+  setText('du-s3-ist',totS3);  setText('du-s3-ziel',zS3);
+  setText('du-svc-ist',totSvc);
+
+  setText('usum-s1',totS1); setText('usum-s2',totS2);
+  setText('usum-s3',totS3); setText('usum-svc',totSvc);
+
+  setText('umsatz-card-name',
+    view==='fk'  ? (team+' · Führungskraft · '+n+' Personen') :
+    view==='ges' ? 'Gesamtbereich Franke · 30 Personen' :
+                   person);
+  setText('umsatz-card-sub', zeitLabel+' 2026');
+  updateCardAvatar('umsatz-card-avatar', view, team, person);
+}
+
+// ── KOMPETENZ ──
+function updateKompetenz() {
+  const team   = document.getElementById('komp-team').value;
+  const person = document.getElementById('komp-person').value;
+  const zeit   = document.getElementById('komp-zeit').value;
+  const zKey   = ZIELE.events[zeit] !== undefined ? zeit : 'q1';
+  const zeitLabel = {q1:'Q1',q2:'Q2',q3:'Q3',q4:'Q4',jahr:'Gesamtjahr'}[zeit]||'Q1';
+
+  const filtered = teamData.filter(p=>(team==='alle'||p.team===team)&&(person==='alle'||p.name===person));
+  const n = Math.max(filtered.length,1);
+
+  const totEv = filtered.reduce((s,p)=>s+getVal(p,'events',zKey),0);
+  const zEv   = n * ZIELE.events[zKey];
+  const pEv   = zEv>0 ? Math.round(totEv/zEv*100) : 0;
+
+  updateDonut('donut-komp-ev-ring','donut-komp-ev-pct','donut-komp-ev-badge', pEv);
+  const evIst=document.getElementById('komp-ev-ist'); if(evIst) evIst.textContent=totEv;
+  const evZ=document.getElementById('komp-ev-ziel');  if(evZ)   evZ.textContent=zEv;
+
+  updatePersonCard('komp-person-avatar','komp-person-name','komp-person-sub',person,team,zeitLabel,
+    ['komp-sum-ev'],[totEv]);
+}
+
+// ── RANKING ──
+function updateRanking(type) {
+  const el = document.getElementById('ranking-'+type+'-body');
+  if(!el) return;
+
+  let kpi='events', zKey='q1', zielPro=3;
+
+  if(type==='wachstum') {
+    const ks=document.getElementById('rank-w-kpi'); if(ks) kpi=ks.value;
+    const zs=document.getElementById('rank-w-zeit'); if(zs) zKey=zs.value;
+    zielPro = (ZIELE[kpi]&&ZIELE[kpi][zKey]) ? ZIELE[kpi][zKey] : 3;
+
+  } else if(type==='umsatz') {
+    const ks=document.getElementById('rank-u-kpi');   kpi   = ks ? ks.value : 'gesamt';
+    const zs=document.getElementById('rank-u-zeit');  zKey  = zs ? zs.value : 'q1';
+    // Update title
+    const titles = {gesamt:'Gesamt-Termine',s1:'S1 · Erstgespräch',s2:'S2 · Verkaufsgespräch',s3:'S3 · Abschlussgespräch',service:'Service · Bestand'};
+    const titleEl = document.getElementById('ranking-umsatz-title');
+    if(titleEl) titleEl.textContent = '🏆 Ranking · ' + (titles[kpi]||kpi);
+    // Ziel: service has no target
+    zielPro = kpi==='gesamt' ? (ZIELE.s1[zKey]+ZIELE.s2[zKey]+ZIELE.s3[zKey]) :
+              kpi==='service' ? 0 :
+              (ZIELE[kpi]&&ZIELE[kpi][zKey]) ? ZIELE[kpi][zKey] : 0;
+
+  } else if(type==='kompetenz') {
+    kpi='events'; zKey='q1';
+    zielPro = ZIELE.events[zKey];
+  }
+
+  // Get values - gesamt = s1+s2+s3+service
+  function getKpiVal(p, kpi, zKey) {
+    if(kpi==='gesamt') return getVal(p,'s1',zKey)+getVal(p,'s2',zKey)+getVal(p,'s3',zKey)+getVal(p,'service',zKey);
+    return getVal(p, kpi, zKey);
+  }
+
+  const sorted = [...teamData].sort((a,b)=>getKpiVal(b,kpi,zKey)-getKpiVal(a,kpi,zKey));
+  const noTarget = (kpi==='service');
+
+  el.innerHTML = sorted.map((p,i)=>{
+    const val = getKpiVal(p,kpi,zKey);
+    const pct = (!noTarget && zielPro>0) ? Math.min(Math.round(val/zielPro*100),100) : null;
+    const col = pct!==null ? pctColor(pct) : '#0891b2';
+    const cls = teamColors[p.team]||'';
+    const rankCls = i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other';
+    const ini = p.name.split(' ').map(w=>w[0]).slice(0,2).join('');
+    const pctDisplay = pct!==null ? `<span style="color:${col};font-weight:700;">${pct}%</span>` : `<span style="color:#0891b2;font-weight:700;">${val}</span>`;
+    const zielDisplay = !noTarget ? ` / ${zielPro}` : ' (kein Ziel)';
+    return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
+      <div class="rank-num ${rankCls}">${i+1}</div>
+      <div class="avatar ${cls}" style="width:30px;height:30px;font-size:10px;">${ini}</div>
+      <div style="flex:1;">
+        <div style="font-weight:700;font-size:13px;">${p.name}</div>
+        <div style="font-size:10px;color:var(--text3);font-family:'Space Mono',monospace;">${p.team}</div>
+      </div>
+      <div style="width:150px;">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;">
+          ${pctDisplay}
+          <span style="color:var(--text3);font-family:'Space Mono',monospace;">${val}${zielDisplay}</span>
+        </div>
+        ${pct!==null ? `<div style="height:5px;background:var(--border2);border-radius:4px;overflow:hidden;">
+          <div style="height:100%;width:${pct}%;background:${col};border-radius:4px;transition:width .6s;"></div>
+        </div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── TOOLTIP ──
+// Event-Nachweis-Daten pro Person
+const EVENT_NACHWEISE = {
+  'Henrik Franke': [
+    {event:'AEC Abend', datum:'24.02.2026', gaeste:['Timo Friedrich','Levin']},
+  ],
+  'Jonah Faßhauer': [
+    {event:'Kart Event', datum:'28.02.2026', gaeste:['Arvid Ihle','Ahmad Ramadan','Tom Ludwicziak']},
+  ],
+  'Marcel Speder': [
+    {event:'Kart Event', datum:'28.02.2026', gaeste:['Justin Jünge','Robin Bölder','Alexander Halbfinger']},
+  ],
+  'Nick Ketterer': [
+    {event:'AEC Abend', datum:'24.02.2026', gaeste:['Fynn Siekmann','Mika Siekmann']},
+  ],
+  'Oscar Houtrow': [
+    {event:'Kart Event', datum:'28.02.2026', gaeste:['Jesse Hanisch','Leonhardt Richter']},
+  ],
+  'Sven Rittmeier': [
+    {event:'AEC Abend', datum:'24.02.2026', gaeste:[]},
+  ],
+  'Yves Lison': [
+    {event:'AEC Abend', datum:'24.02.2026', gaeste:['Jan-Luca Nehrlich']},
+  ],
+  'Hauke Rühmkorf': [
+    {event:'AEC Abend', datum:'24.02.2026', gaeste:['Joris Koplin']},
+    {event:'Kart Event', datum:'28.02.2026', gaeste:['Timo Müller']},
+  ],
+};
+
+function buildWachstumTooltip(person, team, zeitLabel) {
+  const container = document.getElementById('tooltip-w-content');
+  if(!container) return;
+
+  let html = '';
+
+  if(person !== 'alle') {
+    // Individual view: show event proof
+    const nachweise = EVENT_NACHWEISE[person] || [];
+    const p = teamData.find(x=>x.name===person);
+    const evTotal  = p ? getVal(p,'events',zeitLabel==='Q1'?'q1':zeitLabel==='Q2'?'q2':zeitLabel==='Q3'?'q3':zeitLabel==='Q4'?'q4':'jahr') : 0;
+    const sphTotal = p ? getVal(p,'sph',   zeitLabel==='Q1'?'q1':zeitLabel==='Q2'?'q2':zeitLabel==='Q3'?'q3':zeitLabel==='Q4'?'q4':'jahr') : 0;
+    const eg1Total = p ? getVal(p,'eg1',   zeitLabel==='Q1'?'q1':zeitLabel==='Q2'?'q2':zeitLabel==='Q3'?'q3':zeitLabel==='Q4'?'q4':'jahr') : 0;
+
+    html += `<strong style="color:#0f1623;display:block;margin-bottom:8px;">Nachweis · ${person}</strong>`;
+    html += `<div style="font-size:10px;font-family:'Space Mono',monospace;color:#7a8799;margin-bottom:10px;">${zeitLabel} 2026 · ${team !== 'alle' ? team : 'Alle Bereiche'}</div>`;
+
+    // Events
+    html += `<div style="font-weight:700;color:#0f1623;margin-bottom:6px;font-size:11px;">🎟️ EVENTTEILNEHMER (${evTotal})</div>`;
+    if(nachweise.length > 0) {
+      nachweise.forEach(n => {
+        if(n.gaeste && n.gaeste.length > 0) {
+          html += `<div style="margin-bottom:8px;padding:8px 10px;background:#f0f2f5;border-radius:7px;border-left:3px solid #2557e8;">`;
+          html += `<div style="font-weight:600;font-size:11px;color:#0f1623;margin-bottom:4px;">${n.event} · ${n.datum}</div>`;
+          html += `<div style="display:flex;flex-wrap:wrap;gap:4px;">`;
+          n.gaeste.forEach(g => {
+            html += `<span style="background:#2557e8;color:#fff;border-radius:20px;padding:2px 8px;font-size:10px;font-weight:600;">${g}</span>`;
+          });
+          html += `</div></div>`;
+        }
+      });
+    } else {
+      html += `<div style="color:#7a8799;font-size:11px;margin-bottom:8px;">Keine Eventteilnehmer erfasst</div>`;
+    }
+
+    // SPH
+    html += `<div style="font-weight:700;color:#0f1623;margin:8px 0 4px;font-size:11px;">🔍 SICHTUNGSGESPRÄCHE (${sphTotal})</div>`;
+    if(sphTotal > 0) {
+      html += `<div style="font-size:11px;color:#3d4a5c;">${sphTotal} Gespräch${sphTotal>1?'e':''} geführt</div>`;
+    } else {
+      html += `<div style="color:#7a8799;font-size:11px;">Noch keine Sichtungsgespräche</div>`;
+    }
+
+    // EG1
+    html += `<div style="font-weight:700;color:#0f1623;margin:8px 0 4px;font-size:11px;">🤝 EINSTELLUNGSGESPRÄCHE (${eg1Total})</div>`;
+    if(eg1Total > 0) {
+      html += `<div style="font-size:11px;color:#3d4a5c;">${eg1Total} Gespräch${eg1Total>1?'e':''} geführt</div>`;
+    } else {
+      html += `<div style="color:#7a8799;font-size:11px;">Noch keine Einstellungsgespräche</div>`;
+    }
+
+    html += `<div style="margin-top:10px;padding-top:10px;border-top:1px solid #d0d6e2;font-size:10px;color:#7a8799;">
+      Ziel ${zeitLabel}: Events ${ZIELE.events[zeitLabel.toLowerCase().replace('gesamtjahr','jahr')] || 3} · SPH ${ZIELE.sph[zeitLabel.toLowerCase().replace('gesamtjahr','jahr')] || 6} · EG1 ${ZIELE.eg1[zeitLabel.toLowerCase().replace('gesamtjahr','jahr')] || 5}
+    </div>`;
+
+  } else {
+    // Team overview: show SMAC explanation
+    html += `<strong style="color:#0f1623;display:block;margin-bottom:6px;">So wird Wachstum berechnet</strong>`;
+    html += `Basis: SMAC-Benchmarks pro Person:<br><br>`;
+    html += `<strong style="color:#0f1623;">🎟️ Eventteilnehmer</strong> — 3/Quartal · 12/Jahr<br>`;
+    html += `<strong style="color:#0f1623;">🔍 Sichtungsgespräche</strong> — 1,5/Quartal · 6/Jahr<br>`;
+    html += `<strong style="color:#0f1623;">🤝 Einstellungsgespräche</strong> — 1,25/Quartal · 5/Jahr<br><br>`;
+    html += `Ist ÷ (Personen × Ziel) = Zielerreichung<br>`;
+    html += `🟢 ≥100% &nbsp;·&nbsp; 🟡 50–99% &nbsp;·&nbsp; 🔴 &lt;50%`;
+
+    // Show top performers
+    const sorted = [...teamData].filter(p=>p.events>0).sort((a,b)=>b.events-a.events);
+    if(sorted.length > 0) {
+      html += `<div style="margin-top:10px;padding-top:10px;border-top:1px solid #d0d6e2;">`;
+      html += `<div style="font-weight:700;font-size:11px;color:#0f1623;margin-bottom:6px;">Top Eventteilnehmer</div>`;
+      sorted.forEach(p => {
+        const col = teamColors[p.team] ? {'team-franke':'#1a44b8','team-ketterer':'#15803d','team-lison':'#b45309','team-ruhmkorf':'#6d28d9'}[teamColors[p.team]] : '#555';
+        html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 0;font-size:11px;">
+          <span style="color:#0f1623;font-weight:600;">${p.name}</span>
+          <span style="font-family:'Space Mono',monospace;font-weight:700;color:${col};">${p.events} Events</span>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+  }
+
+  container.innerHTML = html;
+}
+
+function closeAllTooltips() {
+  document.querySelectorAll('.info-tooltip').forEach(x=>x.classList.remove('visible'));
+}
+
+function toggleTooltip(id, btn) {
+  const t = document.getElementById(id);
+  const isOpen = t.classList.contains('visible');
+  closeAllTooltips();
+  if(isOpen) return;
+
+  // Rebuild wachstum tooltip content
+  if(id === 'tooltip-w') {
+    const view   = viewState['wachstum'] || 'fk';
+    const team   = view==='fk' ? (document.getElementById('w-team')||{}).value||'Franke'
+                 : view==='ma' ? (document.getElementById('w-team-ma')||{}).value||'alle'
+                 : 'alle';
+    const person = view==='ma' ? (document.getElementById('w-person')||{}).value||'alle' : 'alle';
+    const zeit   = (document.getElementById('w-zeit')||{}).value||'q1';
+    const zeitLabel = {q1:'Q1',q2:'Q2',q3:'Q3',q4:'Q4',jahr:'Gesamtjahr'}[zeit]||'Q1';
+    buildWachstumTooltip(person, team, zeitLabel);
+  }
+
+  // Position: below the button, adjusted so it stays on screen
+  const r   = btn.getBoundingClientRect();
+  const tw  = 340;
+  const th  = Math.min(400, window.innerHeight * 0.6);
+  let   top = r.bottom + 8;
+  let   left = r.left;
+
+  // Don't overflow right
+  if(left + tw > window.innerWidth - 12) left = window.innerWidth - tw - 12;
+  // Don't overflow bottom → show above button instead
+  if(top + th > window.innerHeight - 12) top = r.top - th - 8;
+  // Don't go above viewport
+  if(top < 8) top = 8;
+
+  t.style.top  = top  + 'px';
+  t.style.left = left + 'px';
+  t.classList.add('visible');
+}
+
+document.addEventListener('click', e => {
+  if(!e.target.closest('.info-btn-wrap') && !e.target.closest('.info-tooltip'))
+    closeAllTooltips();
+});
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeAllTooltips(); });
+
+// ── TEAM TABLE ──
+function initTeamTable() {
+  const tbody = document.getElementById('team-table-body');
+  if(!tbody) return;
+  tbody.innerHTML='';
+  teamData.forEach(p=>{
+    const ini = p.name.split(' ').map(w=>w[0]).slice(0,2).join('');
+    const cls = teamColors[p.team]||'';
+    const tr  = document.createElement('tr');
+    tr.innerHTML=`
+      <td><div class="person-cell">
+        <div class="avatar ${cls}" style="width:28px;height:28px;font-size:10px;">${ini}</div>
+        <div class="person-name">${p.name}</div>
+      </div></td>
+      <td><span class="tag ${cls}">${p.team}</span></td>
+      <td><span style="font-size:11px;font-family:'Space Mono',monospace;color:var(--text3);">${p.head?'Teamkopf':'VP'}</span></td>
+      <td><span class="num-cell ${(p.q1.events||0)>0?'positive':'zero'}">${p.q1.events||'—'}</span></td>
+      <td><span class="num-cell ${(p.q1.sph||0)>0?'positive':'zero'}">${p.q1.sph||'—'}</span></td>
+      <td><span class="num-cell ${(p.q1.eg1||0)>0?'positive':'zero'}">${p.q1.eg1||'—'}</span></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ── NAVIGATION ──
+const pageTitles = {
+  wachstum:           ['Wachstums-Dashboard',  'ÜBERBLICK · Q1 2026 · ALLE TEAMBEREICHE'],
+  umsatz:             ['Umsatz-Dashboard',      'TERMINE & KENNZAHLEN · Q1 2026'],
+  kompetenz:          ['Kompetenz-Dashboard',   'SCHULUNG · EVENTS · STECKBRIEF'],
+  smac:               ['SMAC-Benchmarks',       'MONATLICHE & QUARTALSWEISE ZIELE'],
+  events:             ['Event-Tracking',        'ALLE EVENTS 2026 · TEILNEHMER & DETAILS'],
+  team:               ['Team-Übersicht',        '30 MITGLIEDER · STAND MÄRZ 2026'],
+  organigramm:        ['Organigramm',           'HIERARCHIE & STRUKTUR · TEAM FRANKE'],
+  'ranking-wachstum': ['Ranking · Wachstum',    'ALLE MITGLIEDER NACH ZIELERREICHUNG'],
+  'ranking-umsatz':   ['Ranking · Umsatz',      'ALLE MITGLIEDER NACH UMSATZTERMINEN'],
+  'ranking-kompetenz':['Ranking · Kompetenz',   'ALLE MITGLIEDER NACH KOMPETENZ-KPIs'],
+};
+const dashboardSubs = ['wachstum','umsatz','kompetenz'];
+
+function showPage(id, navEl, parentDash) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const pg = document.getElementById('page-'+id);
+  if(pg) pg.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  dashboardSubs.forEach(d=>{
+    const sub=document.getElementById('sub-'+d);
+    const nav=document.getElementById('nav-'+d);
+    const active=(id===d||parentDash===d);
+    if(sub) sub.style.display=active?'flex':'none';
+    if(active&&nav) nav.classList.add('active');
+  });
+  if(navEl) navEl.classList.add('active');
+  const titles=pageTitles[id]||['Dashboard',''];
+  document.getElementById('page-title').textContent=titles[0];
+  document.getElementById('page-sub').textContent=titles[1];
+  if(id==='team') initTeamTable();
+  if(id==='ranking-wachstum') updateRanking('wachstum');
+  if(id==='ranking-umsatz') updateRanking('umsatz');
+  if(id==='ranking-kompetenz') updateRanking('kompetenz');
+}
+
+function setQ(q,el){document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
+function setMonth(m,el){document.querySelectorAll('.month-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
+
+// ── EVENT MODAL ──
+const teamColors2 = {Franke:'team-franke',Ketterer:'team-ketterer',Lison:'team-lison','Rühmkorf':'team-ruhmkorf'};
+
+function openEventModal() {
+  // Build VP list
+  const list = document.getElementById('ev-vp-list');
+  list.innerHTML = '';
+  teamData.forEach(p => {
+    const ini = p.name.split(' ').map(w=>w[0]).slice(0,2).join('');
+    const cls = teamColors2[p.team]||'';
+    const div = document.createElement('div');
+    div.className = 'modal-vp-row';
+    div.dataset.name = p.name;
+    div.dataset.selected = '0';
+    div.innerHTML = `
+      <div class="modal-vp-header" onclick="toggleVP(this.parentElement)">
+        <div class="avatar ${cls}" style="width:26px;height:26px;font-size:9px;flex-shrink:0;">${ini}</div>
+        <div style="flex:1;font-size:13px;font-weight:700;">${p.name}</div>
+        <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);">${p.team}</div>
+        <div style="font-size:16px;color:var(--text3);margin-left:8px;">+</div>
+      </div>
+      <div class="modal-vp-guests">
+        <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);margin-bottom:6px;">GÄSTE</div>
+        <div class="guest-tags" style="margin-bottom:6px;"></div>
+        <div style="display:flex;gap:6px;">
+          <input class="modal-input" style="margin:0;flex:1;font-size:12px;padding:6px 10px;" placeholder="Gast-Name eingeben …" onkeydown="if(event.key==='Enter'){addGuest(this);}" />
+          <button class="modal-btn modal-btn-secondary" style="padding:6px 12px;font-size:12px;" onclick="addGuest(this.previousElementSibling)">+</button>
+        </div>
+      </div>`;
+    list.appendChild(div);
+  });
+  // Set today's date
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('ev-datum').value = today;
+  document.getElementById('ev-name').value = '';
+  document.getElementById('event-modal').classList.add('open');
+}
+
+function closeEventModal() {
+  document.getElementById('event-modal').classList.remove('open');
+}
+
+function toggleVP(row) {
+  const sel = row.dataset.selected === '1';
+  row.dataset.selected = sel ? '0' : '1';
+  row.classList.toggle('selected', !sel);
+  const icon = row.querySelector('.modal-vp-header div:last-child');
+  if(icon) icon.textContent = sel ? '+' : '−';
+}
+
+function addGuest(input) {
+  const val = input.value.trim();
+  if(!val) return;
+  const tags = input.closest('.modal-vp-guests').querySelector('.guest-tags');
+  const tag = document.createElement('span');
+  tag.className = 'modal-guest-tag';
+  tag.innerHTML = `${val}<button onclick="this.parentElement.remove()">✕</button>`;
+  tags.appendChild(tag);
+  input.value = '';
+}
+
+function saveEvent() {
+  const name   = document.getElementById('ev-name').value.trim();
+  const datum  = document.getElementById('ev-datum').value;
+  const quartal= document.getElementById('ev-quartal').value;
+  if(!name || !datum) { alert('Bitte Name und Datum eingeben.'); return; }
+
+  // Collect selected VPs and their guests
+  const vps = [];
+  document.querySelectorAll('.modal-vp-row[data-selected="1"]').forEach(row => {
+    const vpName = row.dataset.name;
+    const guests = [...row.querySelectorAll('.guest-tags .modal-guest-tag')]
+      .map(t => t.textContent.replace('✕','').trim());
+    vps.push({name: vpName, guests});
+  });
+  if(vps.length === 0) { alert('Bitte mindestens einen Mitarbeiter auswählen.'); return; }
+
+  // Format date
+  const [y,m,d] = datum.split('-');
+  const datumFormatted = `${d}.${m}.${y}`;
+
+  // Count total guests
+  const totalGuests = vps.reduce((s,v)=>s+v.guests.length, 0);
+
+  // ── Update teamData: increment events for each VP in the right quarter ──
+  vps.forEach(vp => {
+    const p = teamData.find(x=>x.name===vp.name);
+    if(p && p[quartal]) p[quartal].events = (p[quartal].events||0) + 1;
+  });
+
+  // ── Save to localStorage ──
+  const stored = JSON.parse(localStorage.getItem('custom_events')||'[]');
+  stored.push({name, datum: datumFormatted, quartal, vps, totalGuests});
+  localStorage.setItem('custom_events', JSON.stringify(stored));
+
+  // ── Render new event card ──
+  renderCustomEvent({name, datum: datumFormatted, quartal, vps, totalGuests});
+
+  // ── Refresh dashboards ──
+  filterWachstum();
+  filterUmsatz();
+  updateKompetenz();
+  updateRanking('wachstum');
+  updateRanking('umsatz');
+
+  closeEventModal();
+}
+
+function renderCustomEvent(ev) {
+  const colorMap = {Franke:'#1a44b8',Ketterer:'#15803d',Lison:'#b45309','Rühmkorf':'#6d28d9'};
+  const bgMap    = {Franke:'rgba(37,87,232,.1)',Ketterer:'rgba(22,163,74,.1)',Lison:'rgba(217,119,6,.1)','Rühmkorf':'rgba(124,58,237,.1)'};
+
+  const rows = ev.vps.map(vp => {
+    const p = teamData.find(x=>x.name===vp.name);
+    const team = p ? p.team : '';
+    const col = colorMap[team]||'#555';
+    const bg  = bgMap[team]||'rgba(0,0,0,.06)';
+    const ini = vp.name.split(' ').map(w=>w[0]).slice(0,2).join('');
+    const guestBadges = vp.guests.map(g =>
+      `<span style="background:${bg};color:${col};border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;">${g}</span>`
+    ).join('');
+    const guestCount = vp.guests.length;
+    return `<div style="display:grid;grid-template-columns:160px 1fr;gap:0;align-items:start;padding:10px 14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);">
+      <div>
+        <div style="font-weight:700;font-size:13px;">${vp.name}</div>
+        <div style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);">${team}</div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
+        ${guestBadges}
+        ${guestCount > 0 ? `<span style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text3);margin-left:4px;">${guestCount} Gast${guestCount>1?'e':''}</span>` : '<span style="font-size:10px;color:var(--text3);">Kein Gast</span>'}
+      </div>
+    </div>`;
+  }).join('');
+
+  const card = document.createElement('div');
+  card.className = 'card animate';
+  card.style.marginBottom = '16px';
+  card.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div>
+        <div style="font-size:16px;font-weight:800;">${ev.name}</div>
+        <div style="font-size:11px;font-family:'Space Mono',monospace;color:var(--text3);margin-top:2px;">${ev.datum} · ${ev.totalGuests} Gast${ev.totalGuests!==1?'e':''} gesamt</div>
+      </div>
+      <div style="font-size:36px;font-weight:800;color:#16a34a;">${ev.totalGuests}</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">${rows}</div>`;
+
+  // Insert before "Geplante Events"
+  const geplant = document.getElementById('geplante-events-section');
+  if(geplant) geplant.parentElement.insertBefore(card, geplant);
+}
+
+function loadCustomEvents() {
+  const stored = JSON.parse(localStorage.getItem('custom_events')||'[]');
+  stored.forEach(ev => {
+    // Re-apply events to teamData
+    ev.vps.forEach(vp => {
+      const p = teamData.find(x=>x.name===vp.name);
+      if(p && p[ev.quartal]) p[ev.quartal].events = (p[ev.quartal].events||0) + 1;
+    });
+    renderCustomEvent(ev);
+  });
+}
+
+// Close modal on overlay click
+document.getElementById('event-modal').addEventListener('click', function(e) {
+  if(e.target === this) closeEventModal();
+});
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', ()=>{
+  loadCustomEvents();
+  initTeamTable();
+  fillPersonDropdown('w-team-ma','w-person');
+  fillPersonDropdown('u-team-ma','u-person');
+  fillPersonDropdown('komp-team-ma','komp-person');
+  filterWachstum();
+  filterUmsatz();
+  updateKompetenz();
+  updateRanking('wachstum');
+  updateRanking('umsatz');
+  updateRanking('kompetenz');
+});
+</script>
+
+<!-- ═══ EVENT MODAL ═══ -->
+<div class="modal-overlay" id="event-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeEventModal()">✕</button>
+    <div class="modal-title">📅 Neues Event eintragen</div>
+
+    <div class="modal-label">Event-Name</div>
+    <input class="modal-input" id="ev-name" placeholder="z.B. AEC Abend, Kart Event …" />
+
+    <div class="modal-label">Datum</div>
+    <input class="modal-input" id="ev-datum" type="date" />
+
+    <div class="modal-label">Zeitraum (Quartal)</div>
+    <select class="modal-input" id="ev-quartal">
+      <option value="q1">Q1 2026</option>
+      <option value="q2">Q2 2026</option>
+      <option value="q3">Q3 2026</option>
+      <option value="q4">Q4 2026</option>
+    </select>
+
+    <div class="modal-label">Mitarbeiter & Gäste</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:8px;">Mitarbeiter anklicken zum Auswählen, dann Gäste eintragen</div>
+    <div class="modal-vp-list" id="ev-vp-list"></div>
+
+    <div class="modal-btn-row">
+      <button class="modal-btn modal-btn-secondary" onclick="closeEventModal()">Abbrechen</button>
+      <button class="modal-btn modal-btn-primary" onclick="saveEvent()">Event speichern</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
